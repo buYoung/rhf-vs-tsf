@@ -1,69 +1,53 @@
-# React + TypeScript + Vite
+# RHF vs TSF (React Hook Form vs TanStack Form)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Compare React Hook Form and TanStack Form side-by-side with simple, focused examples.
 
-Currently, two official plugins are available:
+## Tech Stack
+- React + TypeScript + Vite
+- UI: MUI (@mui/material, @mui/icons-material) with Emotion
+- Package manager: pnpm
+- Linting/Formatting: Biome
+- Testing: Not configured
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting Started
+- Install dependencies
+  - `pnpm install`
+- Start dev server (Vite, default port 5173)
+  - `pnpm dev`
+  - Custom port example: `pnpm dev -- --port 5174`
+- Build
+  - `pnpm build`
+- Preview production build
+  - `pnpm preview`
+- Lint / Auto-fix / Format
+  - `pnpm lint`
+  - `pnpm run fix`
+  - `pnpm run format`
+- Type-check only
+  - `pnpm exec tsc -b`
 
-## Expanding the ESLint configuration
+## App Structure
+- Entry: `index.html` → `src/main.tsx` → `<App />`
+- Layout: `src/layout/AppLayout.tsx`
+  - Header: MUI AppBar with two buttons (Simple Data, Nested Data)
+  - Body: centered content area
+- Pages:
+  - `src/pages/SimpleDataPage.tsx`
+  - `src/pages/NestedDataPage.tsx`
+- Navigation: state-based (`useState`) toggle between pages
+- Theming: `ThemeProvider` + `CssBaseline` applied in `src/main.tsx`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Current Status
+- Basic MUI layout implemented
+- Two pages render centered text placeholders:
+  - "Simple Data Page"
+  - "Nested Data Page"
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Roadmap
+- Implement form examples for both libraries:
+  - Simple data forms
+  - Nested/field-array forms
+- Add validation strategies and UX comparisons
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## License
+MIT — see [LICENSE](./LICENSE)
