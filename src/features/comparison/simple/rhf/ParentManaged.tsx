@@ -1,8 +1,5 @@
-import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Grid, Paper, Typography, Button, Box } from '@mui/material';
-import { simpleSchema } from '../../../shared/schema/simpleSchema';
 import { makeSimpleDefaults } from '../../../shared/mocks/makeSimpleDefaults';
 import { countries, genders, roles } from '../../../shared/mocks/options';
 import type { SimpleFormValues } from '../../../shared/schema/types';
@@ -29,7 +26,6 @@ export default function RHFParentManaged({
   onReset 
 }: RHFParentManagedProps) {
   const methods = useForm<SimpleFormValues>({
-    resolver: zodResolver(simpleSchema),
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
     defaultValues: makeSimpleDefaults()
@@ -103,7 +99,7 @@ export default function RHFParentManaged({
               <RHFRadioGroup 
                 name="gender" 
                 label="Gender" 
-                options={genders}
+                options={genders as any}
                 row
               />
             </Grid>

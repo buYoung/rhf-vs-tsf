@@ -21,7 +21,6 @@ export default function RHFSelect({
   options,
   multiple = false,
   disabled = false,
-  placeholder
 }: RHFSelectProps) {
   const { control } = useFormContext();
   
@@ -40,7 +39,6 @@ export default function RHFSelect({
             {...field}
             label={label}
             multiple={multiple}
-            placeholder={placeholder}
             renderValue={multiple ? (selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                 {(selected as string[]).map((value) => {

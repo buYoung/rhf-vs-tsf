@@ -1,8 +1,6 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Grid, Paper, Typography } from '@mui/material';
-import { simpleSchema } from '../../../shared/schema/simpleSchema';
 import { makeSimpleDefaults } from '../../../shared/mocks/makeSimpleDefaults';
 import { countries, genders, roles } from '../../../shared/mocks/options';
 import type { SimpleFormValues, SectionHandle } from '../../../shared/schema/types';
@@ -24,7 +22,6 @@ interface RHFSectionManagedProps {
 const RHFSectionManaged = forwardRef<SectionHandle<SimpleFormValues>, RHFSectionManagedProps>(
   ({ onSubmit }, ref) => {
     const methods = useForm<SimpleFormValues>({
-      resolver: zodResolver(simpleSchema),
       mode: 'onSubmit',
       reValidateMode: 'onSubmit',
       defaultValues: makeSimpleDefaults()
@@ -97,7 +94,7 @@ const RHFSectionManaged = forwardRef<SectionHandle<SimpleFormValues>, RHFSection
                 <RHFRadioGroup 
                   name="gender" 
                   label="Gender" 
-                  options={genders}
+                  options={genders as any}
                   row
                 />
               </Grid>

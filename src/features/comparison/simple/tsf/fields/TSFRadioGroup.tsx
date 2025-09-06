@@ -6,7 +6,6 @@ import {
   Radio, 
   FormHelperText 
 } from '@mui/material';
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
 
 interface Option {
   value: string;
@@ -14,7 +13,7 @@ interface Option {
 }
 
 interface TSFRadioGroupProps {
-  form: ReactFormExtendedApi<any, any>;
+  form: any;
   name: string;
   label: string;
   options: Option[] | string[];
@@ -37,7 +36,7 @@ export default function TSFRadioGroup({
   return (
     <form.Field
       name={name}
-      children={(field) => (
+      children={(field: any) => (
         <FormControl error={field.state.meta.errors.length > 0} disabled={disabled} fullWidth>
           <FormLabel component="legend">{label}</FormLabel>
           <RadioGroup

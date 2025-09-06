@@ -84,7 +84,8 @@ export const sectionBSchema = z.object({
 export const nestedSchema = z.object({
   sectionA: sectionASchema,
   sectionB: sectionBSchema
-}).refine(
+})
+.refine(
   // Cross-validation: age should match birth date approximately
   (data) => {
     const { sectionA } = data;
@@ -95,5 +96,86 @@ export const nestedSchema = z.object({
   {
     message: 'Age should match the birth date',
     path: ['sectionA', 'age']
+  }
+)
+.refine(
+  // Cross-validation: salary should be reasonable for the role and experience
+  (data) => {
+    const { sectionB } = data;
+    const { employmentType, yearsOfExperience, salary } = sectionB;
+    
+    // Salary expectations based on role and experience
+    if (employmentType === 'intern' && salary > 60000) {
+      return false;
+    }
+    
+    if (employmentType === 'full-time') {
+      const minSalary = 30000 + (yearsOfExperience * 3000);
+      const maxSalary = 200000 + (yearsOfExperience * 5000);
+      return salary >= minSalary && salary <= maxSalary;
+    }
+    
+    return true;
+  },
+  {
+    message: 'Salary should be appropriate for the role and experience level',
+    path: ['sectionB', 'salary']
+  }
+)
+.refine(
+  // Cross-validation: remote work location consistency
+  (data) => {
+    const { sectionB } = data;
+    const { remote, workLocation } = sectionB;
+    
+    // If remote is true, work location can be anywhere
+    // If remote is false, work location should be more specific
+    if (!remote && workLocation.toLowerCase().includes('remote')) {
+      return false;
+    }
+    
+    return true;
+  },
+  {
+    message: 'Work location should be consistent with remote work preference',
+    path: ['sectionB', 'workLocation']
+  }
+)
+.refine(
+  // Cross-validation: start date should not be too far in the future for experienced roles
+  (data) => {
+    const { sectionB } = data;
+    const { startDate, yearsOfExperience } = sectionB;
+    
+    // Experienced professionals shouldn't have start dates too far in the future
+    if (yearsOfExperience > 5) {
+      const monthsFromNow = startDate.diff(dayjs(), 'month');
+      return monthsFromNow <= 6; // Max 6 months for experienced professionals
+    }
+    
+    return true;
+  },
+  {
+    message: 'Start date should not be more than 6 months in the future for experienced roles',
+    path: ['sectionB', 'startDate']
+  }
+)
+.refine(
+  // Async cross-validation: email domain should match company for known companies
+  async (data) => {
+    const { sectionA, sectionB } = data;
+    const { email } = sectionA;
+    const { company } = sectionB;
+    
+    try {
+      return await checkEmailDomain(email, company);
+    } catch {
+      // If API fails, allow the combination (don't block user)
+      return true;
+    }
+  },
+  {
+    message: 'Email domain should match the company domain for major companies',
+    path: ['sectionA', 'email']
   }
 );

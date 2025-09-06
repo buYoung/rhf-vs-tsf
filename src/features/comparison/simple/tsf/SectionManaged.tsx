@@ -1,8 +1,6 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { useForm } from '@tanstack/react-form';
-import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Grid, Paper, Typography } from '@mui/material';
-import { simpleSchema } from '../../../shared/schema/simpleSchema';
 import { makeSimpleDefaults } from '../../../shared/mocks/makeSimpleDefaults';
 import { countries, genders, roles } from '../../../shared/mocks/options';
 import type { SimpleFormValues, SectionHandle } from '../../../shared/schema/types';
@@ -25,10 +23,6 @@ const TSFSectionManaged = forwardRef<SectionHandle<SimpleFormValues>, TSFSection
   ({ onSubmit }, ref) => {
     const form = useForm({
       defaultValues: makeSimpleDefaults(),
-      validatorAdapter: zodValidator(),
-      validators: {
-        onSubmit: simpleSchema,
-      },
       onSubmit: async ({ value }) => {
         onSubmit?.(value);
       },
@@ -103,7 +97,7 @@ const TSFSectionManaged = forwardRef<SectionHandle<SimpleFormValues>, TSFSection
                 form={form}
                 name="gender" 
                 label="Gender" 
-                options={genders}
+                options={genders as any}
                 row
               />
             </Grid>

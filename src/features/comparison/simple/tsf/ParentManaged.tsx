@@ -1,8 +1,5 @@
-import React from 'react';
 import { useForm } from '@tanstack/react-form';
-import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Grid, Paper, Typography, Button, Box } from '@mui/material';
-import { simpleSchema } from '../../../shared/schema/simpleSchema';
 import { makeSimpleDefaults } from '../../../shared/mocks/makeSimpleDefaults';
 import { countries, genders, roles } from '../../../shared/mocks/options';
 import type { SimpleFormValues } from '../../../shared/schema/types';
@@ -30,10 +27,6 @@ export default function TSFParentManaged({
 }: TSFParentManagedProps) {
   const form = useForm({
     defaultValues: makeSimpleDefaults(),
-    validatorAdapter: zodValidator(),
-    validators: {
-      onSubmit: simpleSchema,
-    },
     onSubmit: async ({ value }) => {
       onSubmit?.(value);
     },
@@ -109,7 +102,7 @@ export default function TSFParentManaged({
               form={form}
               name="gender" 
               label="Gender" 
-              options={genders}
+              options={genders as any}
               row
             />
           </Grid>

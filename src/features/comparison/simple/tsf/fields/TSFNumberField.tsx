@@ -1,8 +1,7 @@
 import { TextField } from '@mui/material';
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
 
 interface TSFNumberFieldProps {
-  form: ReactFormExtendedApi<any, any>;
+  form: any;
   name: string;
   label: string;
   min?: number;
@@ -25,7 +24,7 @@ export default function TSFNumberField({
   return (
     <form.Field
       name={name}
-      children={(field) => (
+      children={(field: any) => (
         <TextField
           value={field.state.value ?? ''}
           onChange={(e) => {

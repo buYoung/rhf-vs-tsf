@@ -29,19 +29,18 @@ export function makeSectionADefaults(): SectionAValues {
 
 export function makeSectionBDefaults(): SectionBValues {
   const companyName = faker.company.name();
-  const isCurrentJob = faker.datatype.boolean();
   const isRemote = faker.datatype.boolean();
   
   return {
     jobTitle: faker.person.jobTitle(),
     company: companyName,
-    department: faker.helpers.arrayElement(departments).value,
-    role: faker.helpers.arrayElement(roles).value,
+    department: typeof departments[0] === 'string' ? faker.helpers.arrayElement(departments) : faker.helpers.arrayElement(departments as any[]).value,
+    role: typeof roles[0] === 'string' ? faker.helpers.arrayElement(roles) : faker.helpers.arrayElement(roles as any[]).value,
     employmentType: faker.helpers.arrayElement(employmentTypes).value,
     yearsOfExperience: faker.number.int({ min: 0, max: 20 }),
     startDate: dayjs(faker.date.past({ years: 3 })),
     salary: faker.number.int({ min: 40000, max: 250000 }),
-    skills: faker.helpers.arrayElements(skills, { min: 3, max: 7 }).map(s => s.value),
+    skills: faker.helpers.arrayElements(skills, { min: 3, max: 7 }).map(s => typeof s === 'string' ? s : (s as any).value),
     linkedinProfile: faker.internet.url(),
     managerName: faker.person.fullName(),
     workLocation: faker.location.city(),

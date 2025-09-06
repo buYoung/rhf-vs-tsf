@@ -1,5 +1,4 @@
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText, Chip, Box } from '@mui/material';
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
 
 interface Option {
   value: string;
@@ -7,7 +6,7 @@ interface Option {
 }
 
 interface TSFSelectProps {
-  form: ReactFormExtendedApi<any, any>;
+  form: any;
   name: string;
   label: string;
   options: Option[] | string[];
@@ -23,7 +22,6 @@ export default function TSFSelect({
   options,
   multiple = false,
   disabled = false,
-  placeholder
 }: TSFSelectProps) {
   const normalizedOptions: Option[] = options.map(option => 
     typeof option === 'string' ? { value: option, label: option } : option
@@ -32,7 +30,7 @@ export default function TSFSelect({
   return (
     <form.Field
       name={name}
-      children={(field) => (
+      children={(field: any) => (
         <FormControl fullWidth size="small" error={field.state.meta.errors.length > 0} disabled={disabled}>
           <InputLabel>{label}</InputLabel>
           <Select
@@ -41,7 +39,6 @@ export default function TSFSelect({
             onBlur={field.handleBlur}
             label={label}
             multiple={multiple}
-            placeholder={placeholder}
             renderValue={multiple ? (selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                 {(selected as string[]).map((value) => {

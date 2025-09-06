@@ -1,8 +1,6 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { useForm } from '@tanstack/react-form';
-import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Grid, Paper, Typography } from '@mui/material';
-import { sectionASchema } from '../../../shared/schema/nestedSchema';
 import { makeSectionADefaults } from '../../../shared/mocks/makeNestedDefaults';
 import { countries, genders } from '../../../shared/mocks/options';
 import type { SectionAValues, SectionHandle } from '../../../shared/schema/types';
@@ -58,68 +56,49 @@ const TSFSectionA = forwardRef<SectionHandle<SectionAValues>, TSFSectionAProps>(
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="firstName" validators={{ onChange: sectionASchema.shape.firstName }}>
-                {(field) => <TSFTextField field={field} label="First Name" />}
-              </form.Field>
+              <TSFTextField form={form} name="firstName" label="First Name" />
             </Grid>
             <Grid size={6}>
-              <form.Field name="lastName" validators={{ onChange: sectionASchema.shape.lastName }}>
-                {(field) => <TSFTextField field={field} label="Last Name" />}
-              </form.Field>
+              <TSFTextField form={form} name="lastName" label="Last Name" />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="username" validators={{ onChange: sectionASchema.shape.username }}>
-                {(field) => <TSFTextField field={field} label="Username" />}
-              </form.Field>
+              <TSFTextField form={form} name="username" label="Username" />
             </Grid>
             <Grid size={6}>
-              <form.Field name="email" validators={{ onChange: sectionASchema.shape.email }}>
-                {(field) => <TSFTextField field={field} label="Email" type="email" />}
-              </form.Field>
+              <TSFTextField form={form} name="email" label="Email" type="email" />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="password" validators={{ onChange: sectionASchema.shape.password }}>
-                {(field) => <TSFTextField field={field} label="Password" type="password" />}
-              </form.Field>
+              <TSFTextField form={form} name="password" label="Password" type="password" />
             </Grid>
             <Grid size={6}>
-              <form.Field name="age" validators={{ onChange: sectionASchema.shape.age }}>
-                {(field) => <TSFNumberField field={field} label="Age" min={18} max={120} />}
-              </form.Field>
+              <TSFNumberField form={form} name="age" label="Age" min={18} max={120} />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="birthDate" validators={{ onChange: sectionASchema.shape.birthDate }}>
-                {(field) => <TSFDatePicker field={field} label="Birth Date" />}
-              </form.Field>
+              <TSFDatePicker form={form} name="birthDate" label="Birth Date" />
             </Grid>
             <Grid size={6}>
-              <form.Field name="phoneNumber" validators={{ onChange: sectionASchema.shape.phoneNumber }}>
-                {(field) => <TSFTextField field={field} label="Phone Number" />}
-              </form.Field>
+              <TSFTextField form={form} name="phoneNumber" label="Phone Number" />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={12}>
-              <form.Field name="gender" validators={{ onChange: sectionASchema.shape.gender }}>
-                {(field) => (
-                  <TSFRadioGroup 
-                    field={field}
-                    label="Gender" 
-                    options={genders}
-                    row
-                  />
-                )}
-              </form.Field>
+              <TSFRadioGroup 
+                form={form}
+                name="gender"
+                label="Gender" 
+                options={genders as any}
+                row
+              />
             </Grid>
           </FieldRow>
 
@@ -127,40 +106,28 @@ const TSFSectionA = forwardRef<SectionHandle<SectionAValues>, TSFSectionAProps>(
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="country" validators={{ onChange: sectionASchema.shape.country }}>
-                {(field) => <TSFSelect field={field} label="Country" options={countries} />}
-              </form.Field>
+              <TSFSelect form={form} name="country" label="Country" options={countries} />
             </Grid>
             <Grid size={6}>
-              <form.Field name="city" validators={{ onChange: sectionASchema.shape.city }}>
-                {(field) => <TSFTextField field={field} label="City" />}
-              </form.Field>
+              <TSFTextField form={form} name="city" label="City" />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={8}>
-              <form.Field name="addressLine1" validators={{ onChange: sectionASchema.shape.addressLine1 }}>
-                {(field) => <TSFTextField field={field} label="Address" />}
-              </form.Field>
+              <TSFTextField form={form} name="addressLine1" label="Address" />
             </Grid>
             <Grid size={4}>
-              <form.Field name="zipCode" validators={{ onChange: sectionASchema.shape.zipCode }}>
-                {(field) => <TSFTextField field={field} label="Zip Code" />}
-              </form.Field>
+              <TSFTextField form={form} name="zipCode" label="Zip Code" />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="website" validators={{ onChange: sectionASchema.shape.website }}>
-                {(field) => <TSFTextField field={field} label="Website" />}
-              </form.Field>
+              <TSFTextField form={form} name="website" label="Website" />
             </Grid>
             <Grid size={6}>
-              <form.Field name="bio" validators={{ onChange: sectionASchema.shape.bio }}>
-                {(field) => <TSFTextField field={field} label="Bio" multiline rows={2} />}
-              </form.Field>
+              <TSFTextField form={form} name="bio" label="Bio" multiline rows={2} />
             </Grid>
           </FieldRow>
         </form>

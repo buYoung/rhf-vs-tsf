@@ -1,9 +1,8 @@
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import type { Dayjs } from 'dayjs';
 
 interface TSFDatePickerProps {
-  form: ReactFormExtendedApi<any, any>;
+  form: any;
   name: string;
   label: string;
   disabled?: boolean;
@@ -22,7 +21,7 @@ export default function TSFDatePicker({
   return (
     <form.Field
       name={name}
-      children={(field) => (
+      children={(field: any) => (
         <DatePicker
           value={field.state.value || null}
           onChange={(newValue) => field.handleChange(newValue)}

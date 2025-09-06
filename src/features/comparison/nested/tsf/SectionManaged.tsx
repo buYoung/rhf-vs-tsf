@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef, useImperativeHandle } from 'react';
+import { useRef, forwardRef, useImperativeHandle } from 'react';
 import { Box, Typography } from '@mui/material';
 import TSFSectionA from './SectionA';
 import TSFSectionB from './SectionB';

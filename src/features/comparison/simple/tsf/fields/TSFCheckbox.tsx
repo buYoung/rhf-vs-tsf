@@ -1,8 +1,7 @@
 import { FormControlLabel, Checkbox, FormControl, FormHelperText } from '@mui/material';
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
 
 interface TSFCheckboxProps {
-  form: ReactFormExtendedApi<any, any>;
+  form: any;
   name: string;
   label: string;
   disabled?: boolean;
@@ -17,7 +16,7 @@ export default function TSFCheckbox({
   return (
     <form.Field
       name={name}
-      children={(field) => (
+      children={(field: any) => (
         <FormControl error={field.state.meta.errors.length > 0} disabled={disabled} fullWidth>
           <FormControlLabel
             control={

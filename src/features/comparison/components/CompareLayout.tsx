@@ -17,7 +17,9 @@ import RHFParentManaged from '../simple/rhf/ParentManaged';
 import TSFSectionManaged from '../simple/tsf/SectionManaged';
 import TSFParentManaged from '../simple/tsf/ParentManaged';
 import RHFNestedSectionManaged from '../nested/rhf/SectionManaged';
+import RHFNestedParentManaged from '../nested/rhf/ParentManaged';
 import TSFNestedSectionManaged from '../nested/tsf/SectionManaged';
+import TSFNestedParentManaged from '../nested/tsf/ParentManaged';
 
 type FormType = 'simple' | 'nested';
 type ManagementMode = 'section' | 'parent';
@@ -176,9 +178,11 @@ export default function CompareLayout() {
                 />
               )}
               {formType === 'nested' && managementMode === 'parent' && (
-                <Typography variant="h6" color="text.secondary" sx={{ p: 4, textAlign: 'center' }}>
-                  Nested Parent Managed Coming Soon...
-                </Typography>
+                <RHFNestedParentManaged 
+                  onSubmit={handleLeftSubmit}
+                  onValidate={() => {}}
+                  onReset={() => {}}
+                />
               )}
             </Box>
           </Grid>
@@ -208,9 +212,11 @@ export default function CompareLayout() {
                 />
               )}
               {formType === 'nested' && managementMode === 'parent' && (
-                <Typography variant="h6" color="text.secondary" sx={{ p: 4, textAlign: 'center' }}>
-                  Nested Parent Managed Coming Soon...
-                </Typography>
+                <TSFNestedParentManaged 
+                  onSubmit={handleRightSubmit}
+                  onValidate={() => {}}
+                  onReset={() => {}}
+                />
               )}
             </Box>
           </Grid>

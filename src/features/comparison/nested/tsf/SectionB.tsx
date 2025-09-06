@@ -1,8 +1,6 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { useForm } from '@tanstack/react-form';
-import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Grid, Paper, Typography } from '@mui/material';
-import { sectionBSchema } from '../../../shared/schema/nestedSchema';
 import { makeSectionBDefaults } from '../../../shared/mocks/makeNestedDefaults';
 import { roles, departments, employmentTypes, skills } from '../../../shared/mocks/options';
 import type { SectionBValues, SectionHandle } from '../../../shared/schema/types';
@@ -27,7 +25,6 @@ const TSFSectionB = forwardRef<SectionHandle<SectionBValues>, TSFSectionBProps>(
       onSubmit: async ({ value }) => {
         onSubmit?.(value);
       },
-      validatorAdapter: zodValidator(),
     });
 
     useImperativeHandle(ref, () => ({
@@ -59,53 +56,37 @@ const TSFSectionB = forwardRef<SectionHandle<SectionBValues>, TSFSectionBProps>(
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="jobTitle" validators={{ onChange: sectionBSchema.shape.jobTitle }}>
-                {(field) => <TSFTextField field={field} label="Job Title" />}
-              </form.Field>
+              <TSFTextField form={form} name="jobTitle" label="Job Title" />
             </Grid>
             <Grid size={6}>
-              <form.Field name="company" validators={{ onChange: sectionBSchema.shape.company }}>
-                {(field) => <TSFTextField field={field} label="Company" />}
-              </form.Field>
+              <TSFTextField form={form} name="company" label="Company" />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="department" validators={{ onChange: sectionBSchema.shape.department }}>
-                {(field) => <TSFSelect field={field} label="Department" options={departments} />}
-              </form.Field>
+              <TSFSelect form={form} name="department" label="Department" options={departments as any} />
             </Grid>
             <Grid size={6}>
-              <form.Field name="role" validators={{ onChange: sectionBSchema.shape.role }}>
-                {(field) => <TSFSelect field={field} label="Role" options={roles} />}
-              </form.Field>
+              <TSFSelect form={form} name="role" label="Role" options={roles as any} />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="employmentType" validators={{ onChange: sectionBSchema.shape.employmentType }}>
-                {(field) => <TSFSelect field={field} label="Employment Type" options={employmentTypes} />}
-              </form.Field>
+              <TSFSelect form={form} name="employmentType" label="Employment Type" options={employmentTypes as any} />
             </Grid>
             <Grid size={6}>
-              <form.Field name="yearsOfExperience" validators={{ onChange: sectionBSchema.shape.yearsOfExperience }}>
-                {(field) => <TSFNumberField field={field} label="Years of Experience" min={0} max={50} />}
-              </form.Field>
+              <TSFNumberField form={form} name="yearsOfExperience" label="Years of Experience" min={0} max={50} />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="startDate" validators={{ onChange: sectionBSchema.shape.startDate }}>
-                {(field) => <TSFDatePicker field={field} label="Start Date" />}
-              </form.Field>
+              <TSFDatePicker form={form} name="startDate" label="Start Date" />
             </Grid>
             <Grid size={6}>
-              <form.Field name="salary" validators={{ onChange: sectionBSchema.shape.salary }}>
-                {(field) => <TSFNumberField field={field} label="Expected Salary" min={0} />}
-              </form.Field>
+              <TSFNumberField form={form} name="salary" label="Expected Salary" min={0} />
             </Grid>
           </FieldRow>
           
@@ -113,53 +94,37 @@ const TSFSectionB = forwardRef<SectionHandle<SectionBValues>, TSFSectionBProps>(
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="skills" validators={{ onChange: sectionBSchema.shape.skills }}>
-                {(field) => <TSFSelect field={field} label="Skills" options={skills} multiple />}
-              </form.Field>
+              <TSFSelect form={form} name="skills" label="Skills" options={skills as any} multiple />
             </Grid>
             <Grid size={6}>
-              <form.Field name="linkedinProfile" validators={{ onChange: sectionBSchema.shape.linkedinProfile }}>
-                {(field) => <TSFTextField field={field} label="LinkedIn Profile" />}
-              </form.Field>
+              <TSFTextField form={form} name="linkedinProfile" label="LinkedIn Profile" />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={6}>
-              <form.Field name="managerName" validators={{ onChange: sectionBSchema.shape.managerName }}>
-                {(field) => <TSFTextField field={field} label="Manager Name" />}
-              </form.Field>
+              <TSFTextField form={form} name="managerName" label="Manager Name" />
             </Grid>
             <Grid size={6}>
-              <form.Field name="workLocation" validators={{ onChange: sectionBSchema.shape.workLocation }}>
-                {(field) => <TSFTextField field={field} label="Work Location" />}
-              </form.Field>
+              <TSFTextField form={form} name="workLocation" label="Work Location" />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={4}>
-              <form.Field name="remote" validators={{ onChange: sectionBSchema.shape.remote }}>
-                {(field) => <TSFCheckbox field={field} label="Remote Work Available" />}
-              </form.Field>
+              <TSFCheckbox form={form} name="remote" label="Remote Work Available" />
             </Grid>
             <Grid size={4}>
-              <form.Field name="flexible" validators={{ onChange: sectionBSchema.shape.flexible }}>
-                {(field) => <TSFCheckbox field={field} label="Flexible Hours" />}
-              </form.Field>
+              <TSFCheckbox form={form} name="flexible" label="Flexible Hours" />
             </Grid>
             <Grid size={4}>
-              <form.Field name="benefits" validators={{ onChange: sectionBSchema.shape.benefits }}>
-                {(field) => <TSFCheckbox field={field} label="Benefits Package" />}
-              </form.Field>
+              <TSFCheckbox form={form} name="benefits" label="Benefits Package" />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={12}>
-              <form.Field name="notes" validators={{ onChange: sectionBSchema.shape.notes }}>
-                {(field) => <TSFTextField field={field} label="Additional Notes" multiline rows={3} />}
-              </form.Field>
+              <TSFTextField form={form} name="notes" label="Additional Notes" multiline rows={3} />
             </Grid>
           </FieldRow>
         </form>

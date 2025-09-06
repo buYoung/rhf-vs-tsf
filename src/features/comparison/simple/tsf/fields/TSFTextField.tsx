@@ -1,8 +1,7 @@
 import { TextField } from '@mui/material';
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
 
 interface TSFTextFieldProps {
-  form: ReactFormExtendedApi<any, any>;
+  form: any;
   name: string;
   label: string;
   type?: string;
@@ -25,7 +24,7 @@ export default function TSFTextField({
   return (
     <form.Field
       name={name}
-      children={(field) => (
+      children={(field: any) => (
         <TextField
           value={field.state.value ?? ''}
           onChange={(e) => field.handleChange(e.target.value)}
