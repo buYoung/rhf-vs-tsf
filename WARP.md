@@ -57,3 +57,10 @@ Conventions and paths
 - SPA mount point: index.html -> #root -> src/main.tsx -> <App />
 - Build output: dist/
 - Vite dev server default URL: http://localhost:5173
+
+MCP Tools Usage
+- This repository uses MCP tools to keep guidance up-to-date and to perform validation without a local test runner.
+- Tools and when to use:
+  - mui: When working with MUI components (designing, implementing, or modifying), consult the MCP tool "mui" before making changes to confirm component APIs, recommended usage patterns, and accessibility guidance.
+  - context7: Before starting any task involving React Hook Form or TanStack Form, call the MCP tool "context7" to fetch the latest best practices, API changes, and migration notes.
+  - playwright: After completing coding tasks, validate the implementation using the MCP tool "playwright".
