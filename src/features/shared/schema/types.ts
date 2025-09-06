@@ -45,27 +45,28 @@ export interface SectionAValues {
   city: string;
   addressLine1: string;
   zipCode: string;
-  website: string;
-  bio: string;
+  website?: string;
+  bio?: string;
 }
 
 export interface SectionBValues {
   // Employment Info (15 fields)
-  companyName: string;
-  workEmail: string;
-  role: string;
+  jobTitle: string;
+  company: string;
   department: string;
+  role: string;
   employmentType: 'full-time' | 'part-time' | 'contract' | 'intern';
-  salary: number;
+  yearsOfExperience: number;
   startDate: Dayjs;
-  endDate?: Dayjs;
-  isCurrent: boolean;
-  remote: boolean;
-  officeCountry?: string;
-  officeCity?: string;
+  salary: number;
   skills: string[];
-  certifications: string;
-  newsletter: boolean;
+  linkedinProfile?: string;
+  managerName: string;
+  workLocation: string;
+  remote: boolean;
+  flexible: boolean;
+  benefits: boolean;
+  notes?: string;
 }
 
 export interface NestedFormValues {

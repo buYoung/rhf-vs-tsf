@@ -54,94 +54,46 @@ export const sectionASchema = z.object({
 
 // Section B Schema - Employment Information (15 fields)
 export const sectionBSchema = z.object({
-  companyName: z.string().min(1, 'Company name is required'),
-  
-  // Work email with domain validation
-  workEmail: z.string()
-    .min(1, 'Work email is required')
-    .email('Please enter a valid email address'),
-    
-  role: z.string().min(1, 'Role is required'),
+  jobTitle: z.string().min(1, 'Job title is required'),
+  company: z.string().min(1, 'Company name is required'),
   department: z.string().min(1, 'Department is required'),
+  role: z.string().min(1, 'Role is required'),
   employmentType: z.enum(['full-time', 'part-time', 'contract', 'intern'], {
     required_error: 'Please select employment type'
   }),
-  
+  yearsOfExperience: z.number()
+    .min(0, 'Years of experience cannot be negative')
+    .max(50, 'Please enter a realistic number of years'),
+  startDate: z.custom<dayjs.Dayjs>((val) => dayjs.isDayjs(val), 'Invalid start date'),
   salary: z.number()
     .min(0, 'Salary cannot be negative')
     .max(1000000, 'Please enter a realistic salary amount'),
-    
-  startDate: z.custom<dayjs.Dayjs>((val) => dayjs.isDayjs(val), 'Invalid start date'),
-  
-  endDate: z.custom<dayjs.Dayjs>((val) => dayjs.isDayjs(val), 'Invalid end date').optional(),
-  
-  isCurrent: z.boolean(),
-  remote: z.boolean(),
-  officeCountry: z.string().optional(),
-  officeCity: z.string().optional(),
-  
   skills: z.array(z.string())
     .min(1, 'Please select at least one skill')
     .max(10, 'Please select no more than 10 skills'),
-    
-  certifications: z.string().optional(),
-  newsletter: z.boolean()
-}).refine(
-  // If not remote, office location is required
-  (data) => {
-    if (!data.remote && (!data.officeCountry || !data.officeCity)) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: 'Office location is required for non-remote positions',
-    path: ['officeCity']
-  }
-).refine(
-  // If current job, end date should not be provided
-  (data) => {
-    if (data.isCurrent && data.endDate) {
-      return false;
-    }
-    return true;
-  },
-  {
-    message: 'End date should not be provided for current position',
-    path: ['endDate']
-  }
-);
+  linkedinProfile: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+  managerName: z.string().min(1, 'Manager name is required'),
+  workLocation: z.string().min(1, 'Work location is required'),
+  remote: z.boolean(),
+  flexible: z.boolean(),
+  benefits: z.boolean(),
+  notes: z.string().max(500, 'Notes must be less than 500 characters').optional()
+});
 
 // Full nested schema with cross-section validation
 export const nestedSchema = z.object({
   sectionA: sectionASchema,
   sectionB: sectionBSchema
 }).refine(
-  // Cross-validation: start date should be before end date
+  // Cross-validation: age should match birth date approximately
   (data) => {
-    const { sectionB } = data;
-    if (sectionB.endDate && sectionB.startDate) {
-      return sectionB.startDate.isBefore(sectionB.endDate);
-    }
-    return true;
+    const { sectionA } = data;
+    const calculatedAge = dayjs().diff(sectionA.birthDate, 'year');
+    const ageDifference = Math.abs(calculatedAge - sectionA.age);
+    return ageDifference <= 1; // Allow 1 year difference
   },
   {
-    message: 'Start date must be before end date',
-    path: ['sectionB', 'endDate']
-  }
-).refine(
-  // Cross-validation: work email domain should match company (async)
-  async (data) => {
-    const { sectionB } = data;
-    try {
-      return await checkEmailDomain(sectionB.workEmail, sectionB.companyName);
-    } catch {
-      // If API fails, allow the validation to pass
-      return true;
-    }
-  },
-  {
-    message: 'Work email domain does not match the company',
-    path: ['sectionB', 'workEmail']
+    message: 'Age should match the birth date',
+    path: ['sectionA', 'age']
   }
 );

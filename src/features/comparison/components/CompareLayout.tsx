@@ -1,22 +1,23 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { 
   Container, 
   Grid, 
   Box, 
   Snackbar, 
   Alert,
-  Typography,
-  Divider
+  Typography
 } from '@mui/material';
 import Toolbar from './Toolbar';
 import ValidationSummary from './ValidationSummary';
-import type { SectionHandle, SimpleFormValues } from '../../shared/schema/types';
+import type { SectionHandle, SimpleFormValues, NestedFormValues } from '../../shared/schema/types';
 
 // Import form components
 import RHFSectionManaged from '../simple/rhf/SectionManaged';
 import RHFParentManaged from '../simple/rhf/ParentManaged';
 import TSFSectionManaged from '../simple/tsf/SectionManaged';
 import TSFParentManaged from '../simple/tsf/ParentManaged';
+import RHFNestedSectionManaged from '../nested/rhf/SectionManaged';
+import TSFNestedSectionManaged from '../nested/tsf/SectionManaged';
 
 type FormType = 'simple' | 'nested';
 type ManagementMode = 'section' | 'parent';
@@ -37,8 +38,10 @@ export default function CompareLayout() {
   const [errorMessage, setErrorMessage] = useState('');
 
   // Refs for form components
-  const leftFormRef = useRef<SectionHandle<SimpleFormValues>>(null);
-  const rightFormRef = useRef<SectionHandle<SimpleFormValues>>(null);
+  const leftSimpleFormRef = useRef<SectionHandle<SimpleFormValues>>(null);
+  const rightSimpleFormRef = useRef<SectionHandle<SimpleFormValues>>(null);
+  const leftNestedFormRef = useRef<SectionHandle<NestedFormValues>>(null);
+  const rightNestedFormRef = useRef<SectionHandle<NestedFormValues>>(null);
 
   const handleValidate = async () => {
     setValidating(true);
@@ -46,10 +49,17 @@ export default function CompareLayout() {
     setRightErrors([]);
     
     try {
-      const [leftValid, rightValid] = await Promise.all([
-        leftFormRef.current?.validate() || Promise.resolve(false),
-        rightFormRef.current?.validate() || Promise.resolve(false)
-      ]);
+      let leftFormPromise, rightFormPromise;
+      
+      if (formType === 'simple') {
+        leftFormPromise = leftSimpleFormRef.current?.validate() || Promise.resolve(false);
+        rightFormPromise = rightSimpleFormRef.current?.validate() || Promise.resolve(false);
+      } else {
+        leftFormPromise = leftNestedFormRef.current?.validate() || Promise.resolve(false);
+        rightFormPromise = rightNestedFormRef.current?.validate() || Promise.resolve(false);
+      }
+      
+      const [leftValid, rightValid] = await Promise.all([leftFormPromise, rightFormPromise]);
       
       // In a real scenario, we would collect actual validation errors
       // For now, we'll just show a success message if validation passes
@@ -73,8 +83,14 @@ export default function CompareLayout() {
       await handleValidate();
       
       // Then get values and submit
-      const leftValues = leftFormRef.current?.getValues();
-      const rightValues = rightFormRef.current?.getValues();
+      let leftValues, rightValues;
+      if (formType === 'simple') {
+        leftValues = leftSimpleFormRef.current?.getValues();
+        rightValues = rightSimpleFormRef.current?.getValues();
+      } else {
+        leftValues = leftNestedFormRef.current?.getValues();
+        rightValues = rightNestedFormRef.current?.getValues();
+      }
       
       console.log('Left Form Values:', leftValues);
       console.log('Right Form Values:', rightValues);
@@ -88,18 +104,23 @@ export default function CompareLayout() {
   };
 
   const handleReset = () => {
-    leftFormRef.current?.reset();
-    rightFormRef.current?.reset();
+    if (formType === 'simple') {
+      leftSimpleFormRef.current?.reset();
+      rightSimpleFormRef.current?.reset();
+    } else {
+      leftNestedFormRef.current?.reset();
+      rightNestedFormRef.current?.reset();
+    }
     setLeftErrors([]);
     setRightErrors([]);
     setSuccessMessage('Forms reset successfully!');
   };
 
-  const handleLeftSubmit = (data: SimpleFormValues) => {
+  const handleLeftSubmit = (data: SimpleFormValues | NestedFormValues) => {
     console.log('Left form submitted:', data);
   };
 
-  const handleRightSubmit = (data: SimpleFormValues) => {
+  const handleRightSubmit = (data: SimpleFormValues | NestedFormValues) => {
     console.log('Right form submitted:', data);
   };
 
@@ -120,24 +141,24 @@ export default function CompareLayout() {
       <Container maxWidth="xl" sx={{ py: 3 }}>
         {/* Validation Summary */}
         <Grid container spacing={3} sx={{ mb: 2 }}>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <ValidationSummary errors={leftErrors} title="React Hook Form Errors" />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <ValidationSummary errors={rightErrors} title="TanStack Form Errors" />
           </Grid>
         </Grid>
         
         {/* Form Comparison */}
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Box sx={{ position: 'relative' }}>
               <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
                 Left Side - React Hook Form
               </Typography>
               {formType === 'simple' && managementMode === 'section' && (
                 <RHFSectionManaged 
-                  ref={leftFormRef} 
+                  ref={leftSimpleFormRef} 
                   onSubmit={handleLeftSubmit} 
                 />
               )}
@@ -148,22 +169,28 @@ export default function CompareLayout() {
                   onReset={() => {}}
                 />
               )}
-              {formType === 'nested' && (
+              {formType === 'nested' && managementMode === 'section' && (
+                <RHFNestedSectionManaged 
+                  ref={leftNestedFormRef} 
+                  onSubmit={handleLeftSubmit} 
+                />
+              )}
+              {formType === 'nested' && managementMode === 'parent' && (
                 <Typography variant="h6" color="text.secondary" sx={{ p: 4, textAlign: 'center' }}>
-                  Nested Forms Coming Soon...
+                  Nested Parent Managed Coming Soon...
                 </Typography>
               )}
             </Box>
           </Grid>
           
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Box sx={{ position: 'relative' }}>
               <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
                 Right Side - TanStack Form
               </Typography>
               {formType === 'simple' && managementMode === 'section' && (
                 <TSFSectionManaged 
-                  ref={rightFormRef} 
+                  ref={rightSimpleFormRef} 
                   onSubmit={handleRightSubmit} 
                 />
               )}
@@ -174,9 +201,15 @@ export default function CompareLayout() {
                   onReset={() => {}}
                 />
               )}
-              {formType === 'nested' && (
+              {formType === 'nested' && managementMode === 'section' && (
+                <TSFNestedSectionManaged 
+                  ref={rightNestedFormRef} 
+                  onSubmit={handleRightSubmit} 
+                />
+              )}
+              {formType === 'nested' && managementMode === 'parent' && (
                 <Typography variant="h6" color="text.secondary" sx={{ p: 4, textAlign: 'center' }}>
-                  Nested Forms Coming Soon...
+                  Nested Parent Managed Coming Soon...
                 </Typography>
               )}
             </Box>

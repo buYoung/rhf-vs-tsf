@@ -1,33 +1,32 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Grid, Paper, Typography } from '@mui/material';
-import { simpleSchema } from '../../../shared/schema/simpleSchema';
-import { makeSimpleDefaults } from '../../../shared/mocks/makeSimpleDefaults';
-import { countries, genders, roles } from '../../../shared/mocks/options';
-import type { SimpleFormValues, SectionHandle } from '../../../shared/schema/types';
+import { sectionASchema } from '../../../shared/schema/nestedSchema';
+import { makeSectionADefaults } from '../../../shared/mocks/makeNestedDefaults';
+import { countries, genders } from '../../../shared/mocks/options';
+import type { SectionAValues, SectionHandle } from '../../../shared/schema/types';
 import SectionHeader from '../../../shared/ui/SectionHeader';
 import FieldRow from '../../../shared/ui/FieldRow';
 
 // Import RHF field components
-import RHFTextField from './fields/RHFTextField';
-import RHFNumberField from './fields/RHFNumberField';
-import RHFDatePicker from './fields/RHFDatePicker';
-import RHFSelect from './fields/RHFSelect';
-import RHFCheckbox from './fields/RHFCheckbox';
-import RHFRadioGroup from './fields/RHFRadioGroup';
+import RHFTextField from '../../simple/rhf/fields/RHFTextField';
+import RHFNumberField from '../../simple/rhf/fields/RHFNumberField';
+import RHFDatePicker from '../../simple/rhf/fields/RHFDatePicker';
+import RHFSelect from '../../simple/rhf/fields/RHFSelect';
+import RHFRadioGroup from '../../simple/rhf/fields/RHFRadioGroup';
 
-interface RHFSectionManagedProps {
-  onSubmit?: (data: SimpleFormValues) => void;
+interface RHFSectionAProps {
+  onSubmit?: (data: SectionAValues) => void;
 }
 
-const RHFSectionManaged = forwardRef<SectionHandle<SimpleFormValues>, RHFSectionManagedProps>(
+const RHFSectionA = forwardRef<SectionHandle<SectionAValues>, RHFSectionAProps>(
   ({ onSubmit }, ref) => {
-    const methods = useForm<SimpleFormValues>({
-      resolver: zodResolver(simpleSchema),
+    const methods = useForm<SectionAValues>({
+      resolver: zodResolver(sectionASchema),
       mode: 'onSubmit',
       reValidateMode: 'onSubmit',
-      defaultValues: makeSimpleDefaults()
+      defaultValues: makeSectionADefaults()
     });
 
     useImperativeHandle(ref, () => ({
@@ -36,25 +35,25 @@ const RHFSectionManaged = forwardRef<SectionHandle<SimpleFormValues>, RHFSection
         return result;
       },
       getValues: () => methods.getValues(),
-      reset: () => methods.reset(makeSimpleDefaults())
+      reset: () => methods.reset(makeSectionADefaults())
     }));
 
-    const handleFormSubmit = (data: SimpleFormValues) => {
+    const handleFormSubmit = (data: SectionAValues) => {
       onSubmit?.(data);
     };
 
     return (
-      <Paper sx={{ p: 3, height: '100%' }}>
-        <Typography variant="h5" component="h2" gutterBottom>
-          React Hook Form
+      <Paper sx={{ p: 3, mb: 2 }}>
+        <Typography variant="h6" component="h3" gutterBottom>
+          Section A - Personal Information
         </Typography>
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          Section Managed • 20 Fields
+          React Hook Form • 15 Fields
         </Typography>
         
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(handleFormSubmit)}>
-            <SectionHeader title="Personal Information" />
+            <SectionHeader title="Basic Information" />
             
             <FieldRow>
               <Grid size={6}>
@@ -97,7 +96,7 @@ const RHFSectionManaged = forwardRef<SectionHandle<SimpleFormValues>, RHFSection
                 <RHFRadioGroup 
                   name="gender" 
                   label="Gender" 
-                  options={genders}
+                  options={genders as any}
                   row
                 />
               </Grid>
@@ -122,41 +121,13 @@ const RHFSectionManaged = forwardRef<SectionHandle<SimpleFormValues>, RHFSection
                 <RHFTextField name="zipCode" label="Zip Code" />
               </Grid>
             </FieldRow>
-
-            <SectionHeader title="Professional Information" />
             
             <FieldRow>
-              <Grid size={6}>
-                <RHFSelect name="role" label="Role" options={roles} />
-              </Grid>
-              <Grid size={6}>
-                <RHFNumberField name="salary" label="Salary ($)" min={0} max={1000000} />
-              </Grid>
-            </FieldRow>
-            
-            <FieldRow>
-              <Grid size={6}>
-                <RHFDatePicker name="startDate" label="Start Date" />
-              </Grid>
               <Grid size={6}>
                 <RHFTextField name="website" label="Website" />
               </Grid>
-            </FieldRow>
-            
-            <FieldRow>
-              <Grid size={12}>
-                <RHFTextField name="bio" label="Bio" multiline rows={3} />
-              </Grid>
-            </FieldRow>
-
-            <SectionHeader title="Preferences" />
-            
-            <FieldRow>
               <Grid size={6}>
-                <RHFCheckbox name="newsletter" label="Subscribe to newsletter" />
-              </Grid>
-              <Grid size={6}>
-                <RHFCheckbox name="acceptTerms" label="Accept terms and conditions" />
+                <RHFTextField name="bio" label="Bio" multiline rows={2} />
               </Grid>
             </FieldRow>
           </form>
@@ -166,6 +137,6 @@ const RHFSectionManaged = forwardRef<SectionHandle<SimpleFormValues>, RHFSection
   }
 );
 
-RHFSectionManaged.displayName = 'RHFSectionManaged';
+RHFSectionA.displayName = 'RHFSectionA';
 
-export default RHFSectionManaged;
+export default RHFSectionA;

@@ -33,23 +33,22 @@ export function makeSectionBDefaults(): SectionBValues {
   const isRemote = faker.datatype.boolean();
   
   return {
-    companyName,
-    workEmail: faker.internet.email({
-      provider: companyName.toLowerCase().replace(/\s+/g, '') + '.com'
-    }),
-    role: faker.helpers.arrayElement(roles),
-    department: faker.helpers.arrayElement(departments),
+    jobTitle: faker.person.jobTitle(),
+    company: companyName,
+    department: faker.helpers.arrayElement(departments).value,
+    role: faker.helpers.arrayElement(roles).value,
     employmentType: faker.helpers.arrayElement(employmentTypes).value,
-    salary: faker.number.int({ min: 40000, max: 250000 }),
+    yearsOfExperience: faker.number.int({ min: 0, max: 20 }),
     startDate: dayjs(faker.date.past({ years: 3 })),
-    endDate: isCurrentJob ? undefined : dayjs(faker.date.recent({ days: 365 })),
-    isCurrent: isCurrentJob,
+    salary: faker.number.int({ min: 40000, max: 250000 }),
+    skills: faker.helpers.arrayElements(skills, { min: 3, max: 7 }).map(s => s.value),
+    linkedinProfile: faker.internet.url(),
+    managerName: faker.person.fullName(),
+    workLocation: faker.location.city(),
     remote: isRemote,
-    officeCountry: isRemote ? undefined : faker.helpers.arrayElement(countries),
-    officeCity: isRemote ? undefined : faker.location.city(),
-    skills: faker.helpers.arrayElements(skills, { min: 3, max: 7 }),
-    certifications: faker.lorem.sentence(),
-    newsletter: faker.datatype.boolean()
+    flexible: faker.datatype.boolean(),
+    benefits: faker.datatype.boolean(),
+    notes: faker.lorem.paragraph()
   };
 }
 
