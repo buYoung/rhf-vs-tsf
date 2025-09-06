@@ -9,32 +9,32 @@ const genders = ['male', 'female', 'other'] as const;
 const contactMethods = ['email', 'phone', 'sms'] as const;
 
 export const addressSchema = z.object({
-    street: z.string().min(1, 'Street is required'),
-    state: z.string().min(1, 'State is required'),
-    postalCode: z.string().min(1, 'Postal code is required'),
-    country: z.enum(countries, { message: 'Country is required' }),
+    street: z.string().min(1, { error: 'Street is required' }),
+    state: z.string().min(1, { error: 'State is required' }),
+    postalCode: z.string().min(1, { error: 'Postal code is required' }),
+    country: z.enum(countries, { error: 'Country is required' }),
 });
 
 export const sectionASchema = z
     .object({
-        firstName: z.string().min(1, 'First name is required'),
-        lastName: z.string().min(1, 'Last name is required'),
-        username: z.string().min(1, 'Username is required'),
-        email: z.string().email({ message: 'Invalid email' }),
-        phone: z.string().regex(phoneRegex, 'Invalid phone number'),
-        password: z.string().regex(passwordRegex, 'Password too weak'),
+        firstName: z.string().min(1, { error: 'First name is required' }),
+        lastName: z.string().min(1, { error: 'Last name is required' }),
+        username: z.string().min(1, { error: 'Username is required' }),
+        email: z.email({ error: 'Invalid email' }),
+        phone: z.string().regex(phoneRegex, { error: 'Invalid phone number' }),
+        password: z.string().regex(passwordRegex, { error: 'Password too weak' }),
         confirmPassword: z.string(),
         birthDate: z
             .string()
             .refine((v) => dayjs(v).isValid(), 'Invalid date')
             .refine((v) => !dayjs(v).isAfter(dayjs()), 'Date cannot be in the future'),
         gender: z.enum(genders).optional(),
-        contactMethod: z.enum(contactMethods, { message: 'Contact method is required' }),
-        website: z.union([z.string().url('Invalid URL'), z.literal('')]).optional(),
+        contactMethod: z.enum(contactMethods, { error: 'Contact method is required' }),
+        website: z.union([z.string().url({ error: 'Invalid URL' }), z.literal('')]).optional(),
         interests: z.array(z.string()).optional(),
         newsletter: z.boolean().optional(),
-        country: z.enum(countries, { message: 'Country is required' }),
-        city: z.string().min(1, 'City is required'),
+        country: z.enum(countries, { error: 'Country is required' }),
+        city: z.string().min(1, { error: 'City is required' }),
     })
     .refine((obj) => obj.password === obj.confirmPassword, {
         message: 'Passwords do not match',
@@ -49,14 +49,18 @@ export const sectionBSchema = z.object({
         .string()
         .refine((v) => dayjs(v).isValid(), 'Invalid date')
         .refine((v) => !dayjs(v).isAfter(dayjs()), 'Date cannot be in the future'),
-    salary: z.number().min(0, 'Salary cannot be negative'),
-    workEmail: z.string().email({ message: 'Invalid email' }),
-    workPhone: z.string().regex(phoneRegex, 'Invalid phone number'),
-    officeLocation: z.enum(countries, { message: 'Office location is required' }),
+    salary: z.number().min(0, { error: 'Salary cannot be negative' }),
+    workEmail: z.email({ error: 'Invalid email' }),
+    workPhone: z.string().regex(phoneRegex, { error: 'Invalid phone number' }),
+    officeLocation: z.enum(countries, { error: 'Office location is required' }),
     remote: z.boolean().optional(),
     address: addressSchema,
-    website: z.union([z.string().url('Invalid URL'), z.literal('')]).optional(),
-    teamSize: z.number().int('Team size must be an integer').min(1, 'Team size must be at least 1').optional(),
+    website: z.union([z.string().url({ error: 'Invalid URL' }), z.literal('')]).optional(),
+    teamSize: z
+        .number()
+        .int({ error: 'Team size must be an integer' })
+        .min(1, { error: 'Team size must be at least 1' })
+        .optional(),
 });
 
 export const nestedRootSchema = z.object({
