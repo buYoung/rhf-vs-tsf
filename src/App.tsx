@@ -1,16 +1,24 @@
-import { useState } from 'react'
-import AppLayout from './layout/AppLayout'
-import SimpleDataPage from './pages/SimpleDataPage'
-import NestedDataPage from './pages/NestedDataPage'
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import CompareLayout from './features/comparison/components/CompareLayout';
 
-type Page = 'simple' | 'nested'
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+  typography: {
+    fontFamily: 'Roboto, Arial, sans-serif',
+  },
+});
 
 export default function App() {
-  const [page, setPage] = useState<Page>('simple')
-
   return (
-    <AppLayout currentPage={page} onChangePage={setPage}>
-      {page === 'simple' ? <SimpleDataPage /> : <NestedDataPage />}
-    </AppLayout>
-  )
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <CompareLayout />
+      </LocalizationProvider>
+    </ThemeProvider>
+  );
 }

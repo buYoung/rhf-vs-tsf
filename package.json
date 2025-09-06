@@ -20,11 +20,12 @@
     "@mui/material": "^7.3.2",
     "@mui/x-date-pickers": "^8.11.1",
     "@tanstack/react-form": "1.19.3",
+    "@tanstack/zod-form-adapter": "^0.42.1",
+    "dayjs": "^1.11.18",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "7.62.0",
-    "zod": "^4.1.5",
-    "dayjs": "^1.11.18"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
