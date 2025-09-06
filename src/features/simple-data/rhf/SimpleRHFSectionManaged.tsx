@@ -10,7 +10,7 @@ import {
     TextField,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
-import { forwardRef, useEffect, useImperativeHandle } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { simpleSchema } from '../shared/schema';
 import type { SimpleFormValues } from '../shared/types';
@@ -77,8 +77,6 @@ function SimpleRHFSectionManagedInner(
         register,
         control,
         formState: { errors },
-        watch,
-        setValue,
     } = methods;
 
     return (

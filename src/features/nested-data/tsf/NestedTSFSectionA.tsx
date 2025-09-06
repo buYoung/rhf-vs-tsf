@@ -29,7 +29,7 @@ export interface NestedTSFSectionAProps {
 }
 
 export default function NestedTSFSectionA({ defaultValues, onReady }: NestedTSFSectionAProps) {
-    const form = useForm<SectionAValues>({ defaultValues, onSubmit: async ({ value }) => value });
+    const form = useForm({ defaultValues, onSubmit: async ({ value }) => value });
 
     useEffect(() => {
         onReady?.({

@@ -28,7 +28,7 @@ export interface NestedTSFTopManagedProps {
 }
 
 export default function NestedTSFTopManaged({ defaultValues, onReady }: NestedTSFTopManagedProps) {
-    const form = useForm<NestedFormValues>({ defaultValues, onSubmit: async ({ value }) => value });
+    const form = useForm({ defaultValues, onSubmit: async ({ value }) => value });
 
     useEffect(() => {
         onReady?.({

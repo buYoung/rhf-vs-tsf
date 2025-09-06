@@ -18,7 +18,7 @@ export const simpleSchema = z
             .refine((v) => dayjs(v).isValid(), 'Invalid date')
             .refine((v) => !dayjs(v).isAfter(dayjs()), 'Date cannot be in the future'),
         age: z
-            .number({ invalid_type_error: 'Age must be a number' })
+            .number()
             .int('Age must be an integer')
             .min(0, 'Age cannot be negative')
             .optional(),
@@ -32,7 +32,7 @@ export const simpleSchema = z
         gender: z.enum(['male', 'female', 'other']).optional(),
         jobTitle: z.string().optional(),
         company: z.string().optional(),
-        termsAccepted: z.literal(true, { errorMap: () => ({ message: 'You must accept the terms' }) }),
+        termsAccepted: z.boolean().refine((v) => v === true, 'You must accept the terms'),
     })
     .refine((obj) => obj.password === obj.confirmPassword, {
         message: 'Passwords do not match',

@@ -24,7 +24,7 @@ const countries = ['United States', 'Canada', 'United Kingdom', 'Germany', 'Fran
 const genders = ['male', 'female', 'other'] as const;
 
 export default function SimpleTSFTopManaged({ defaultValues, onReady }: SimpleTSFTopManagedProps) {
-    const form = useForm<SimpleFormValues>({
+    const form = useForm({
         defaultValues,
         onSubmit: async ({ value }) => value,
     });

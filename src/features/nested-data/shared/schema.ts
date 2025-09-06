@@ -12,7 +12,7 @@ export const addressSchema = z.object({
     street: z.string().min(1, 'Street is required'),
     state: z.string().min(1, 'State is required'),
     postalCode: z.string().min(1, 'Postal code is required'),
-    country: z.enum(countries, { required_error: 'Country is required' }),
+    country: z.enum(countries, { message: 'Country is required' }),
 });
 
 export const sectionASchema = z
@@ -20,7 +20,7 @@ export const sectionASchema = z
         firstName: z.string().min(1, 'First name is required'),
         lastName: z.string().min(1, 'Last name is required'),
         username: z.string().min(1, 'Username is required'),
-        email: z.string().email('Invalid email'),
+        email: z.string().email({ message: 'Invalid email' }),
         phone: z.string().regex(phoneRegex, 'Invalid phone number'),
         password: z.string().regex(passwordRegex, 'Password too weak'),
         confirmPassword: z.string(),
@@ -29,11 +29,11 @@ export const sectionASchema = z
             .refine((v) => dayjs(v).isValid(), 'Invalid date')
             .refine((v) => !dayjs(v).isAfter(dayjs()), 'Date cannot be in the future'),
         gender: z.enum(genders).optional(),
-        contactMethod: z.enum(contactMethods, { required_error: 'Contact method is required' }),
+        contactMethod: z.enum(contactMethods, { message: 'Contact method is required' }),
         website: z.union([z.string().url('Invalid URL'), z.literal('')]).optional(),
         interests: z.array(z.string()).optional(),
         newsletter: z.boolean().optional(),
-        country: z.enum(countries, { required_error: 'Country is required' }),
+        country: z.enum(countries, { message: 'Country is required' }),
         city: z.string().min(1, 'City is required'),
     })
     .refine((obj) => obj.password === obj.confirmPassword, {
@@ -49,10 +49,10 @@ export const sectionBSchema = z.object({
         .string()
         .refine((v) => dayjs(v).isValid(), 'Invalid date')
         .refine((v) => !dayjs(v).isAfter(dayjs()), 'Date cannot be in the future'),
-    salary: z.number({ invalid_type_error: 'Salary must be a number' }).min(0, 'Salary cannot be negative'),
-    workEmail: z.string().email('Invalid email'),
+    salary: z.number().min(0, 'Salary cannot be negative'),
+    workEmail: z.string().email({ message: 'Invalid email' }),
     workPhone: z.string().regex(phoneRegex, 'Invalid phone number'),
-    officeLocation: z.enum(countries, { required_error: 'Office location is required' }),
+    officeLocation: z.enum(countries, { message: 'Office location is required' }),
     remote: z.boolean().optional(),
     address: addressSchema,
     website: z.union([z.string().url('Invalid URL'), z.literal('')]).optional(),
