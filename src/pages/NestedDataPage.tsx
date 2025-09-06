@@ -1,6 +1,10 @@
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 export default function NestedDataPage() {
-  return <Typography variant="h4">Nested Data Page</Typography>;
+    return (
+        <Box>
+            <Typography variant="h5">Deprecated</Typography>
+            <Typography variant="body2">Use the header tabs to navigate to the new Nested pages.</Typography>
+        </Box>
+    );
 }
-
