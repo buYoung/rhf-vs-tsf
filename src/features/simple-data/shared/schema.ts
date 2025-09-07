@@ -9,7 +9,7 @@ export const simpleSchema = z
         firstName: z.string().min(1, { error: 'First name is required' }),
         lastName: z.string().min(1, { error: 'Last name is required' }),
         username: z.string().min(1, { error: 'Username is required' }),
-        email: z.email({ error: 'Invalid email' }),
+        email: z.string().email('Invalid email'),
         phone: z.string().regex(phoneRegex, { error: 'Invalid phone number' }),
         password: z.string().regex(passwordRegex, { error: 'Password too weak' }),
         confirmPassword: z.string(),

@@ -20,7 +20,7 @@ export const sectionASchema = z
         firstName: z.string().min(1, { error: 'First name is required' }),
         lastName: z.string().min(1, { error: 'Last name is required' }),
         username: z.string().min(1, { error: 'Username is required' }),
-        email: z.email({ error: 'Invalid email' }),
+        email: z.string().email('Invalid email'),
         phone: z.string().regex(phoneRegex, { error: 'Invalid phone number' }),
         password: z.string().regex(passwordRegex, { error: 'Password too weak' }),
         confirmPassword: z.string(),
@@ -50,7 +50,7 @@ export const sectionBSchema = z.object({
         .refine((v) => dayjs(v).isValid(), 'Invalid date')
         .refine((v) => !dayjs(v).isAfter(dayjs()), 'Date cannot be in the future'),
     salary: z.number().min(0, { error: 'Salary cannot be negative' }),
-    workEmail: z.email({ error: 'Invalid email' }),
+    workEmail: z.string().email('Invalid email'),
     workPhone: z.string().regex(phoneRegex, { error: 'Invalid phone number' }),
     officeLocation: z.enum(countries, { error: 'Office location is required' }),
     remote: z.boolean().optional(),
