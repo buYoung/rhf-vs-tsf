@@ -13,7 +13,7 @@ import { useForm } from '@tanstack/react-form';
 import { useEffect } from 'react';
 import { simpleSchema } from '../shared/schema';
 import type { SimpleFormValues } from '../shared/types';
-import { FieldErrorText, dayjsToIso, isoToDayjs } from '../shared/ui';
+import { FieldErrorText, dayjsToIso, isoToDayjs, getErrorMessage } from '../shared/ui';
 
 export interface SimpleTSFSectionManagedProps {
     defaultValues: SimpleFormValues;
@@ -26,60 +26,22 @@ const genders = ['male', 'female', 'other'] as const;
 export default function SimpleTSFSectionManaged({ defaultValues, onReady }: SimpleTSFSectionManagedProps) {
     const form = useForm({
         defaultValues,
+        validators: {
+            onChange: simpleSchema,
+            onSubmit: simpleSchema,
+        },
         onSubmit: async ({ value }) => value,
     });
 
     useEffect(() => {
         onReady?.({
             submit: async () => {
-                const values = form.state.values as SimpleFormValues;
-                const parsed = simpleSchema.safeParse(values);
-                if (!parsed.success) {
-                    // Map zod issues to fields
-                    for (const issue of parsed.error.issues) {
-                        const path = issue.path.join('.');
-                        form.setFieldMeta(path as any, (prev: any) => ({ ...prev, errors: [issue.message] }));
-                    }
-                    return null;
-                }
-                return parsed.data;
+                await form.validateAllFields('submit');
+                return form.state.isValid ? (form.state.values as SimpleFormValues) : null;
             },
             validate: async () => {
-                const values = form.state.values as SimpleFormValues;
-                const parsed = simpleSchema.safeParse(values);
-                const fields = [
-                    'firstName',
-                    'lastName',
-                    'username',
-                    'email',
-                    'phone',
-                    'password',
-                    'confirmPassword',
-                    'birthDate',
-                    'age',
-                    'website',
-                    'street',
-                    'city',
-                    'state',
-                    'postalCode',
-                    'country',
-                    'termsAccepted',
-                ] as const;
-                const errorsByField = new Map<string, string>();
-                if (!parsed.success) {
-                    for (const issue of parsed.error.issues) {
-                        const path = issue.path.join('.');
-                        if (fields.includes(path as any)) {
-                            errorsByField.set(path, issue.message);
-                        }
-                    }
-                }
-                // set errors for fields (or clear)
-                for (const f of fields) {
-                    const msg = errorsByField.get(f);
-                    form.setFieldMeta(f as any, (prev: any) => ({ ...prev, errors: msg ? [msg] : [] }));
-                }
-                return errorsByField.size === 0;
+                await form.validateAllFields('submit');
+                return form.state.isValid;
             },
         });
     }, [form, onReady]);
@@ -87,27 +49,33 @@ export default function SimpleTSFSectionManaged({ defaultValues, onReady }: Simp
     return (
         <FormGroup sx={{ gap: 2 }}>
             <form.Field name="firstName">
-                {(field: any) => (
-                    <TextField
-                        label="First Name"
-                        value={field.state.value ?? ''}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        error={!!field.state.meta.errors?.length}
-                        helperText={field.state.meta.errors?.[0]}
-                    />
-                )}
+                {(field) => {
+                    return (
+                        <TextField
+                            label="First Name"
+                            value={field.state.value ?? ''}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            error={!!field.state.meta.errors?.length}
+                            helperText={getErrorMessage(field.state.meta.errors?.[0])}
+                        />
+                    );
+                }}
             </form.Field>
 
             <form.Field name="lastName">
-                {(field: any) => (
-                    <TextField
-                        label="Last Name"
-                        value={field.state.value ?? ''}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        error={!!field.state.meta.errors?.length}
-                        helperText={field.state.meta.errors?.[0]}
-                    />
-                )}
+                {(field) => {
+                    console.log(field.state.meta);
+
+                    return (
+                        <TextField
+                            label="Last Name"
+                            value={field.state.value ?? ''}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            error={!!field.state.meta.errors?.length}
+                            helperText={field.state.meta.errors.map((e) => e?.message).join(', ')}
+                        />
+                    );
+                }}
             </form.Field>
 
             <form.Field name="username">
@@ -336,15 +304,19 @@ export default function SimpleTSFSectionManaged({ defaultValues, onReady }: Simp
 
             <form.Field name="termsAccepted">
                 {(field: any) => (
-                    <div>
+                    <FormControl component="fieldset" variant="standard" error={!!field.state.meta.errors?.length}>
                         <FormControlLabel
                             control={
-                                <Checkbox checked={!!field.state.value} onChange={(_, c) => field.handleChange(c)} />
+                                <Checkbox
+                                    checked={!!field.state.value}
+                                    onChange={(_, c) => field.handleChange(c)}
+                                    onBlur={field.handleBlur}
+                                />
                             }
                             label="I accept the terms"
                         />
                         <FieldErrorText error={field.state.meta.errors?.[0]} />
-                    </div>
+                    </FormControl>
                 )}
             </form.Field>
         </FormGroup>

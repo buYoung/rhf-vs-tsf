@@ -16,7 +16,7 @@ import { useForm } from '@tanstack/react-form';
 import { useEffect } from 'react';
 import { sectionASchema } from '../shared/schema';
 import type { SectionAValues } from '../shared/types';
-import { FieldErrorText, dayjsToIso, isoToDayjs } from '../shared/ui';
+import { FieldErrorText, dayjsToIso, isoToDayjs, getErrorMessage } from '../shared/ui';
 
 const countries = ['United States', 'Canada', 'United Kingdom', 'Germany', 'France', 'Korea'] as const;
 const genders = ['male', 'female', 'other'] as const;
@@ -29,56 +29,24 @@ export interface NestedTSFSectionAProps {
 }
 
 export default function NestedTSFSectionA({ defaultValues, onReady }: NestedTSFSectionAProps) {
-    const form = useForm({ defaultValues, onSubmit: async ({ value }) => value });
+    const form = useForm({
+        defaultValues,
+        validators: {
+            onChange: sectionASchema,
+            onSubmit: sectionASchema,
+        },
+        onSubmit: async ({ value }) => value,
+    });
 
     useEffect(() => {
         onReady?.({
-            submit: async () => {
-                const values = form.state.values as SectionAValues;
-                const parsed = sectionASchema.safeParse(values);
-                if (!parsed.success) {
-                    for (const issue of parsed.error.issues) {
-                        const path = issue.path.join('.');
-                        form.setFieldMeta(path as any, (prev: any) => ({ ...prev, errors: [issue.message] }));
-                    }
-                    return null;
-                }
-                return parsed.data;
+submit: async () => {
+                await form.validateAllFields('submit');
+                return form.state.isValid ? (form.state.values as SectionAValues) : null;
             },
             validate: async () => {
-                const values = form.state.values as SectionAValues;
-                const parsed = sectionASchema.safeParse(values);
-                const fields = [
-                    'firstName',
-                    'lastName',
-                    'username',
-                    'email',
-                    'phone',
-                    'password',
-                    'confirmPassword',
-                    'birthDate',
-                    'gender',
-                    'contactMethod',
-                    'website',
-                    'interests',
-                    'newsletter',
-                    'country',
-                    'city',
-                ] as const;
-                const errorsByField = new Map<string, string>();
-                if (!parsed.success) {
-                    for (const issue of parsed.error.issues) {
-                        const path = issue.path.join('.');
-                        if (fields.includes(path as any)) {
-                            errorsByField.set(path, issue.message);
-                        }
-                    }
-                }
-                for (const f of fields) {
-                    const msg = errorsByField.get(f);
-                    form.setFieldMeta(f as any, (prev: any) => ({ ...prev, errors: msg ? [msg] : [] }));
-                }
-                return errorsByField.size === 0;
+                await form.validateAllFields('submit');
+                return form.state.isValid;
             },
         });
     }, [form, onReady]);
@@ -92,7 +60,7 @@ export default function NestedTSFSectionA({ defaultValues, onReady }: NestedTSFS
                         value={f.state.value ?? ''}
                         onChange={(e) => f.handleChange(e.target.value)}
                         error={!!f.state.meta.errors?.length}
-                        helperText={f.state.meta.errors?.[0]}
+helperText={getErrorMessage(field.state.meta.errors?.[0])}
                     />
                 )}
             </form.Field>

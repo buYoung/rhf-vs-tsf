@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 import { nestedRootSchema } from '../shared/schema';
 import type { NestedFormValues } from '../shared/types';
 import { FieldErrorText, dayjsToIso, isoToDayjs } from '../shared/ui';
+import { validateWithZod } from '../../simple-data/shared/tsf/validation';
 
 const countries = ['United States', 'Canada', 'United Kingdom', 'Germany', 'France', 'Korea'] as const;
 const genders = ['male', 'female', 'other'] as const;
@@ -32,65 +33,14 @@ export default function NestedTSFTopManaged({ defaultValues, onReady }: NestedTS
 
     useEffect(() => {
         onReady?.({
-            submit: async () => {
+submit: async () => {
                 const values = form.state.values as NestedFormValues;
-                const parsed = nestedRootSchema.safeParse(values);
-                if (!parsed.success) {
-                    for (const issue of parsed.error.issues) {
-                        const path = issue.path.join('.');
-                        form.setFieldMeta(path as any, (prev: any) => ({ ...prev, errors: [issue.message] }));
-                    }
-                    return null;
-                }
-                return parsed.data;
+const result = validateWithZod({ form, schema: nestedRootSchema, values });
+                return result.ok ? (result.data as NestedFormValues) : null;
             },
             validate: async () => {
                 const values = form.state.values as NestedFormValues;
-                const parsed = nestedRootSchema.safeParse(values);
-                const fields = [
-                    'sectionA.firstName',
-                    'sectionA.lastName',
-                    'sectionA.username',
-                    'sectionA.email',
-                    'sectionA.phone',
-                    'sectionA.password',
-                    'sectionA.confirmPassword',
-                    'sectionA.birthDate',
-                    'sectionA.gender',
-                    'sectionA.contactMethod',
-                    'sectionA.website',
-                    'sectionA.country',
-                    'sectionA.city',
-                    'sectionB.companyName',
-                    'sectionB.jobTitle',
-                    'sectionB.department',
-                    'sectionB.startDate',
-                    'sectionB.salary',
-                    'sectionB.workEmail',
-                    'sectionB.workPhone',
-                    'sectionB.officeLocation',
-                    'sectionB.remote',
-                    'sectionB.address.street',
-                    'sectionB.address.state',
-                    'sectionB.address.postalCode',
-                    'sectionB.address.country',
-                    'sectionB.website',
-                    'sectionB.teamSize',
-                ] as const;
-                const errorsByField = new Map<string, string>();
-                if (!parsed.success) {
-                    for (const issue of parsed.error.issues) {
-                        const path = issue.path.join('.');
-                        if (fields.includes(path as any)) {
-                            errorsByField.set(path, issue.message);
-                        }
-                    }
-                }
-                for (const f of fields) {
-                    const msg = errorsByField.get(f);
-                    form.setFieldMeta(f as any, (prev: any) => ({ ...prev, errors: msg ? [msg] : [] }));
-                }
-                return errorsByField.size === 0;
+return validateWithZod({ form, schema: nestedRootSchema, values }).ok;
             },
         });
     }, [form, onReady]);

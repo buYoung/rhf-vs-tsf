@@ -11,9 +11,9 @@ import {
 import { DatePicker } from '@mui/x-date-pickers';
 import { useForm } from '@tanstack/react-form';
 import { useEffect } from 'react';
-import { simpleSchema } from '../shared/schema';
+import { simpleSchema, simpleSchemaOnChange } from '../shared/schema';
 import type { SimpleFormValues } from '../shared/types';
-import { FieldErrorText, dayjsToIso, isoToDayjs } from '../shared/ui';
+import { FieldErrorText, dayjsToIso, isoToDayjs, getErrorMessage } from '../shared/ui';
 
 export interface SimpleTSFTopManagedProps {
     defaultValues: SimpleFormValues;
@@ -26,58 +26,22 @@ const genders = ['male', 'female', 'other'] as const;
 export default function SimpleTSFTopManaged({ defaultValues, onReady }: SimpleTSFTopManagedProps) {
     const form = useForm({
         defaultValues,
+        validators: {
+            onChange: simpleSchemaOnChange,
+            onSubmit: simpleSchema,
+        },
         onSubmit: async ({ value }) => value,
     });
 
     useEffect(() => {
         onReady?.({
             submit: async () => {
-                const values = form.state.values as SimpleFormValues;
-                const parsed = simpleSchema.safeParse(values);
-                if (!parsed.success) {
-                    for (const issue of parsed.error.issues) {
-                        const path = issue.path.join('.');
-                        form.setFieldMeta(path as any, (prev: any) => ({ ...prev, errors: [issue.message] }));
-                    }
-                    return null;
-                }
-                return parsed.data;
+                await form.validateAllFields('submit');
+                return form.state.isValid ? (form.state.values as SimpleFormValues) : null;
             },
             validate: async () => {
-                const values = form.state.values as SimpleFormValues;
-                const parsed = simpleSchema.safeParse(values);
-                const fields = [
-                    'firstName',
-                    'lastName',
-                    'username',
-                    'email',
-                    'phone',
-                    'password',
-                    'confirmPassword',
-                    'birthDate',
-                    'age',
-                    'website',
-                    'street',
-                    'city',
-                    'state',
-                    'postalCode',
-                    'country',
-                    'termsAccepted',
-                ] as const;
-                const errorsByField = new Map<string, string>();
-                if (!parsed.success) {
-                    for (const issue of parsed.error.issues) {
-                        const path = issue.path.join('.');
-                        if (fields.includes(path as any)) {
-                            errorsByField.set(path, issue.message);
-                        }
-                    }
-                }
-                for (const f of fields) {
-                    const msg = errorsByField.get(f);
-                    form.setFieldMeta(f as any, (prev: any) => ({ ...prev, errors: msg ? [msg] : [] }));
-                }
-                return errorsByField.size === 0;
+                await form.validateAllFields('submit');
+                return form.state.isValid;
             },
         });
     }, [form, onReady]);
@@ -91,7 +55,7 @@ export default function SimpleTSFTopManaged({ defaultValues, onReady }: SimpleTS
                         value={field.state.value ?? ''}
                         onChange={(e) => field.handleChange(e.target.value)}
                         error={!!field.state.meta.errors?.length}
-                        helperText={field.state.meta.errors?.[0]}
+helperText={getErrorMessage(field.state.meta.errors?.[0])}
                     />
                 )}
             </form.Field>
@@ -334,15 +298,19 @@ export default function SimpleTSFTopManaged({ defaultValues, onReady }: SimpleTS
 
             <form.Field name="termsAccepted">
                 {(field: any) => (
-                    <div>
+                    <FormControl component="fieldset" variant="standard" error={!!field.state.meta.errors?.length}>
                         <FormControlLabel
                             control={
-                                <Checkbox checked={!!field.state.value} onChange={(_, c) => field.handleChange(c)} />
+                                <Checkbox
+                                    checked={!!field.state.value}
+                                    onChange={(_, c) => field.handleChange(c)}
+                                    onBlur={field.handleBlur}
+                                />
                             }
                             label="I accept the terms"
                         />
                         <FieldErrorText error={field.state.meta.errors?.[0]} />
-                    </div>
+                    </FormControl>
                 )}
             </form.Field>
         </FormGroup>

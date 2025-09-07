@@ -35,4 +35,13 @@ export const simpleSchema = z
         path: ['confirmPassword'],
     });
 
+// Relaxed schema for onChange validation so unchecked termsAccepted does not error immediately
+export const simpleSchemaOnChange = simpleSchema
+    .omit({ termsAccepted: true, password: true, confirmPassword: true })
+    .extend({
+        termsAccepted: z.boolean().optional(),
+        password: z.string().optional(),
+        confirmPassword: z.string().optional(),
+    });
+
 export type SimpleFormSchema = z.infer<typeof simpleSchema>;
