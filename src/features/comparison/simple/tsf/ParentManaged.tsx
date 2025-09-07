@@ -1,7 +1,9 @@
 import { useForm } from '@tanstack/react-form';
+import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Grid, Paper, Typography, Button, Box } from '@mui/material';
 import { makeSimpleDefaults } from '../../../shared/mocks/makeSimpleDefaults';
 import { countries, genders, roles } from '../../../shared/mocks/options';
+import { simpleSchema } from '../../../shared/schema/simpleSchema';
 import type { SimpleFormValues } from '../../../shared/schema/types';
 import SectionHeader from '../../../shared/ui/SectionHeader';
 import FieldRow from '../../../shared/ui/FieldRow';
@@ -29,6 +31,11 @@ export default function TSFParentManaged({
     defaultValues: makeSimpleDefaults(),
     onSubmit: async ({ value }) => {
       onSubmit?.(value);
+    },
+    validatorAdapter: zodValidator(),
+    validators: {
+      onBlur: simpleSchema,
+      onSubmit: simpleSchema,
     },
   });
 

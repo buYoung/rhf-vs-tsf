@@ -1,8 +1,11 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { useForm } from '@tanstack/react-form';
+import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Grid, Paper, Typography } from '@mui/material';
 import { makeSectionADefaults } from '../../../shared/mocks/makeNestedDefaults';
 import { countries, genders } from '../../../shared/mocks/options';
+import { sectionASchema } from '../../../shared/schema/nestedSchema';
+import { sectionAFieldValidators } from '../../../shared/validation/fieldValidators';
 import type { SectionAValues, SectionHandle } from '../../../shared/schema/types';
 import SectionHeader from '../../../shared/ui/SectionHeader';
 import FieldRow from '../../../shared/ui/FieldRow';
@@ -24,6 +27,11 @@ const TSFSectionA = forwardRef<SectionHandle<SectionAValues>, TSFSectionAProps>(
       defaultValues: makeSectionADefaults(),
       onSubmit: async ({ value }) => {
         onSubmit?.(value);
+      },
+      validatorAdapter: zodValidator(),
+      validators: {
+        onBlur: sectionASchema,
+        onSubmit: sectionASchema,
       },
     });
 
@@ -56,28 +64,28 @@ const TSFSectionA = forwardRef<SectionHandle<SectionAValues>, TSFSectionAProps>(
           
           <FieldRow>
             <Grid size={6}>
-              <TSFTextField form={form} name="firstName" label="First Name" />
+              <TSFTextField form={form} name="firstName" label="First Name" validators={sectionAFieldValidators.firstName} />
             </Grid>
             <Grid size={6}>
-              <TSFTextField form={form} name="lastName" label="Last Name" />
-            </Grid>
-          </FieldRow>
-          
-          <FieldRow>
-            <Grid size={6}>
-              <TSFTextField form={form} name="username" label="Username" />
-            </Grid>
-            <Grid size={6}>
-              <TSFTextField form={form} name="email" label="Email" type="email" />
+              <TSFTextField form={form} name="lastName" label="Last Name" validators={sectionAFieldValidators.lastName} />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={6}>
-              <TSFTextField form={form} name="password" label="Password" type="password" />
+              <TSFTextField form={form} name="username" label="Username" validators={sectionAFieldValidators.username} onChangeAsyncDebounceMs={500} />
             </Grid>
             <Grid size={6}>
-              <TSFNumberField form={form} name="age" label="Age" min={18} max={120} />
+              <TSFTextField form={form} name="email" label="Email" type="email" validators={sectionAFieldValidators.email} />
+            </Grid>
+          </FieldRow>
+          
+          <FieldRow>
+            <Grid size={6}>
+              <TSFTextField form={form} name="password" label="Password" type="password" validators={sectionAFieldValidators.password} />
+            </Grid>
+            <Grid size={6}>
+              <TSFNumberField form={form} name="age" label="Age" min={18} max={120} validators={sectionAFieldValidators.age} />
             </Grid>
           </FieldRow>
           
@@ -86,7 +94,7 @@ const TSFSectionA = forwardRef<SectionHandle<SectionAValues>, TSFSectionAProps>(
               <TSFDatePicker form={form} name="birthDate" label="Birth Date" />
             </Grid>
             <Grid size={6}>
-              <TSFTextField form={form} name="phoneNumber" label="Phone Number" />
+              <TSFTextField form={form} name="phoneNumber" label="Phone Number" validators={sectionAFieldValidators.phoneNumber} />
             </Grid>
           </FieldRow>
           
@@ -109,25 +117,25 @@ const TSFSectionA = forwardRef<SectionHandle<SectionAValues>, TSFSectionAProps>(
               <TSFSelect form={form} name="country" label="Country" options={countries} />
             </Grid>
             <Grid size={6}>
-              <TSFTextField form={form} name="city" label="City" />
+              <TSFTextField form={form} name="city" label="City" validators={sectionAFieldValidators.city} />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={8}>
-              <TSFTextField form={form} name="addressLine1" label="Address" />
+              <TSFTextField form={form} name="addressLine1" label="Address" validators={sectionAFieldValidators.addressLine1} />
             </Grid>
             <Grid size={4}>
-              <TSFTextField form={form} name="zipCode" label="Zip Code" />
+              <TSFTextField form={form} name="zipCode" label="Zip Code" validators={sectionAFieldValidators.zipCode} />
             </Grid>
           </FieldRow>
           
           <FieldRow>
             <Grid size={6}>
-              <TSFTextField form={form} name="website" label="Website" />
+              <TSFTextField form={form} name="website" label="Website" validators={sectionAFieldValidators.website} />
             </Grid>
             <Grid size={6}>
-              <TSFTextField form={form} name="bio" label="Bio" multiline rows={2} />
+              <TSFTextField form={form} name="bio" label="Bio" multiline rows={2} validators={sectionAFieldValidators.bio} />
             </Grid>
           </FieldRow>
         </form>

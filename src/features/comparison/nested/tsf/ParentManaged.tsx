@@ -1,7 +1,10 @@
 import { useForm } from '@tanstack/react-form';
+import { zodValidator } from '@tanstack/zod-form-adapter';
 import { Grid, Paper, Typography, Button, Box } from '@mui/material';
 import { makeNestedDefaults } from '../../../shared/mocks/makeNestedDefaults';
 import { countries, genders, departments, roles, employmentTypes, skills } from '../../../shared/mocks/options';
+import { nestedSchema } from '../../../shared/schema/nestedSchema';
+import { nestedFieldValidators } from '../../../shared/validation/fieldValidators';
 import type { NestedFormValues } from '../../../shared/schema/types';
 import SectionHeader from '../../../shared/ui/SectionHeader';
 import FieldRow from '../../../shared/ui/FieldRow';
@@ -29,6 +32,11 @@ export default function TSFNestedParentManaged({
     defaultValues: makeNestedDefaults(),
     onSubmit: async ({ value }) => {
       onSubmit?.(value);
+    },
+    validatorAdapter: zodValidator(),
+    validators: {
+      onBlur: nestedSchema,
+      onSubmit: nestedSchema,
     },
   });
 
@@ -72,28 +80,28 @@ export default function TSFNestedParentManaged({
             
             <FieldRow>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionA.firstName" label="First Name" />
+                <TSFTextField form={form} name="sectionA.firstName" label="First Name" validators={nestedFieldValidators.sectionA.firstName} />
               </Grid>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionA.lastName" label="Last Name" />
-              </Grid>
-            </FieldRow>
-            
-            <FieldRow>
-              <Grid size={6}>
-                <TSFTextField form={form} name="sectionA.username" label="Username" />
-              </Grid>
-              <Grid size={6}>
-                <TSFTextField form={form} name="sectionA.email" label="Email" type="email" />
+                <TSFTextField form={form} name="sectionA.lastName" label="Last Name" validators={nestedFieldValidators.sectionA.lastName} />
               </Grid>
             </FieldRow>
             
             <FieldRow>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionA.password" label="Password" type="password" />
+                <TSFTextField form={form} name="sectionA.username" label="Username" validators={nestedFieldValidators.sectionA.username} onChangeAsyncDebounceMs={500} />
               </Grid>
               <Grid size={6}>
-                <TSFNumberField form={form} name="sectionA.age" label="Age" min={18} max={120} />
+                <TSFTextField form={form} name="sectionA.email" label="Email" type="email" validators={nestedFieldValidators.sectionA.email} />
+              </Grid>
+            </FieldRow>
+            
+            <FieldRow>
+              <Grid size={6}>
+                <TSFTextField form={form} name="sectionA.password" label="Password" type="password" validators={nestedFieldValidators.sectionA.password} />
+              </Grid>
+              <Grid size={6}>
+                <TSFNumberField form={form} name="sectionA.age" label="Age" min={18} max={120} validators={nestedFieldValidators.sectionA.age} />
               </Grid>
             </FieldRow>
             
@@ -102,7 +110,7 @@ export default function TSFNestedParentManaged({
                 <TSFDatePicker form={form} name="sectionA.birthDate" label="Birth Date" />
               </Grid>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionA.phoneNumber" label="Phone Number" />
+                <TSFTextField form={form} name="sectionA.phoneNumber" label="Phone Number" validators={nestedFieldValidators.sectionA.phoneNumber} />
               </Grid>
             </FieldRow>
             
@@ -125,25 +133,25 @@ export default function TSFNestedParentManaged({
                 <TSFSelect form={form} name="sectionA.country" label="Country" options={countries} />
               </Grid>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionA.city" label="City" />
+                <TSFTextField form={form} name="sectionA.city" label="City" validators={nestedFieldValidators.sectionA.city} />
               </Grid>
             </FieldRow>
             
             <FieldRow>
               <Grid size={8}>
-                <TSFTextField form={form} name="sectionA.addressLine1" label="Address" />
+                <TSFTextField form={form} name="sectionA.addressLine1" label="Address" validators={nestedFieldValidators.sectionA.addressLine1} />
               </Grid>
               <Grid size={4}>
-                <TSFTextField form={form} name="sectionA.zipCode" label="Zip Code" />
+                <TSFTextField form={form} name="sectionA.zipCode" label="Zip Code" validators={nestedFieldValidators.sectionA.zipCode} />
               </Grid>
             </FieldRow>
             
             <FieldRow>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionA.website" label="Website" />
+                <TSFTextField form={form} name="sectionA.website" label="Website" validators={nestedFieldValidators.sectionA.website} />
               </Grid>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionA.bio" label="Bio" multiline rows={2} />
+                <TSFTextField form={form} name="sectionA.bio" label="Bio" multiline rows={2} validators={nestedFieldValidators.sectionA.bio} />
               </Grid>
             </FieldRow>
           </Box>
@@ -163,10 +171,10 @@ export default function TSFNestedParentManaged({
             
             <FieldRow>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionB.jobTitle" label="Job Title" />
+                <TSFTextField form={form} name="sectionB.jobTitle" label="Job Title" validators={nestedFieldValidators.sectionB.jobTitle} />
               </Grid>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionB.company" label="Company" />
+                <TSFTextField form={form} name="sectionB.company" label="Company" validators={nestedFieldValidators.sectionB.company} />
               </Grid>
             </FieldRow>
             
@@ -184,7 +192,7 @@ export default function TSFNestedParentManaged({
                 <TSFSelect form={form} name="sectionB.employmentType" label="Employment Type" options={employmentTypes as any} />
               </Grid>
               <Grid size={6}>
-                <TSFNumberField form={form} name="sectionB.yearsOfExperience" label="Years of Experience" min={0} max={50} />
+                <TSFNumberField form={form} name="sectionB.yearsOfExperience" label="Years of Experience" min={0} max={50} validators={nestedFieldValidators.sectionB.yearsOfExperience} />
               </Grid>
             </FieldRow>
             
@@ -193,7 +201,7 @@ export default function TSFNestedParentManaged({
                 <TSFDatePicker form={form} name="sectionB.startDate" label="Start Date" />
               </Grid>
               <Grid size={6}>
-                <TSFNumberField form={form} name="sectionB.salary" label="Expected Salary" min={0} />
+                <TSFNumberField form={form} name="sectionB.salary" label="Expected Salary" min={0} validators={nestedFieldValidators.sectionB.salary} />
               </Grid>
             </FieldRow>
 
@@ -204,16 +212,16 @@ export default function TSFNestedParentManaged({
                 <TSFSelect form={form} name="sectionB.skills" label="Skills" options={skills as any} multiple />
               </Grid>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionB.linkedinProfile" label="LinkedIn Profile" />
+                <TSFTextField form={form} name="sectionB.linkedinProfile" label="LinkedIn Profile" validators={nestedFieldValidators.sectionB.linkedinProfile} />
               </Grid>
             </FieldRow>
             
             <FieldRow>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionB.managerName" label="Manager Name" />
+                <TSFTextField form={form} name="sectionB.managerName" label="Manager Name" validators={nestedFieldValidators.sectionB.managerName} />
               </Grid>
               <Grid size={6}>
-                <TSFTextField form={form} name="sectionB.workLocation" label="Work Location" />
+                <TSFTextField form={form} name="sectionB.workLocation" label="Work Location" validators={nestedFieldValidators.sectionB.workLocation} />
               </Grid>
             </FieldRow>
             
@@ -231,7 +239,7 @@ export default function TSFNestedParentManaged({
             
             <FieldRow>
               <Grid size={12}>
-                <TSFTextField form={form} name="sectionB.notes" label="Additional Notes" multiline rows={3} />
+                <TSFTextField form={form} name="sectionB.notes" label="Additional Notes" multiline rows={3} validators={nestedFieldValidators.sectionB.notes} />
               </Grid>
             </FieldRow>
           </Box>
