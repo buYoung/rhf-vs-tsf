@@ -13,6 +13,7 @@ export default function Header() {
   const centerLabel = React.useMemo(() => {
     switch (router.pathname) {
       case '/':
+      case '/simple':
         return 'Simple';
       case '/nested':
         return 'Nested';
