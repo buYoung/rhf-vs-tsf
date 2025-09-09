@@ -1,11 +1,11 @@
 import * as React from 'react';
-import Typography from '@mui/material/Typography';
 import PageContainer from '../components/layout/PageContainer';
+import SimpleCompare from '@/features/simple';
 
 export default function IndexPage() {
   return (
     <PageContainer>
-      <Typography variant="body1">Simple Page</Typography>
+      <SimpleCompare />
     </PageContainer>
   );
 }
