@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import LoginBoxRHF from './rhf/LoginBox';
-import LoginBoxTSF from './tsf/LoginBox';
+import LoginBodyRHF from '@/features/simple/rhf/LoginBody';
+import LoginBodyTSF from '@/features/simple/tsf/LoginBody';
 
 export default function SimpleCompare() {
     return (
@@ -12,7 +12,7 @@ export default function SimpleCompare() {
                     md: 6,
                 }}
             >
-                <LoginBoxRHF />
+                <LoginBodyRHF />
             </Grid>
             <Grid
                 size={{
@@ -20,7 +20,7 @@ export default function SimpleCompare() {
                     md: 6,
                 }}
             >
-                <LoginBoxTSF />
+                <LoginBodyTSF />
             </Grid>
         </Grid>
     );
