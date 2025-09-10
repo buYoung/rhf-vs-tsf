@@ -7,7 +7,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import { ACTION_LABELS } from '@/features/loginForm/constants';
-import { useCallback } from 'react';
 
 export type LoginBodyCommonProps = {
     title: string;
