@@ -1,9 +1,9 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import LoginBodyRHF from '@/features/simple/rhf/LoginBody';
-import LoginBodyTSF from '@/features/simple/tsf/LoginBody';
+import LoginBodyRHF from '@/features/loginForm/rhf/LoginBody';
+import LoginBodyTSF from '@/features/loginForm/tsf/LoginBody';
 
-export default function SimpleCompare() {
+export default function LoginForm() {
     return (
         <Grid container spacing={2}>
             <Grid

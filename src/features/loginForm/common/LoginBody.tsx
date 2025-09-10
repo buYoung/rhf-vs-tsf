@@ -6,14 +6,16 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import { ACTION_LABELS } from '@/features/simple/constants';
+import { ACTION_LABELS } from '@/features/loginForm/constants';
+import { useCallback } from 'react';
 
 export type LoginBodyCommonProps = {
     title: string;
     children: React.ReactNode;
+    handleOnValidate: () => void;
 };
 
-export default function LoginBodyCommon({ title, children }: LoginBodyCommonProps) {
+export default function LoginBodyCommon({ title, children, handleOnValidate }: LoginBodyCommonProps) {
     const [open, setOpen] = React.useState(false);
 
     return (
@@ -22,8 +24,8 @@ export default function LoginBodyCommon({ title, children }: LoginBodyCommonProp
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography variant="subtitle1">{title}</Typography>
                 <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
-                    <Button size="small" variant="outlined">
-                        {ACTION_LABELS.review}
+                    <Button size="small" variant="outlined" onClick={handleOnValidate}>
+                        {ACTION_LABELS.validate}
                     </Button>
                     <Button size="small" variant="outlined" onClick={() => setOpen(true)}>
                         {ACTION_LABELS.code}

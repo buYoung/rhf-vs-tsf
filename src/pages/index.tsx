@@ -1,12 +1,11 @@
 import * as React from 'react';
 import PageContainer from '../components/layout/PageContainer';
-import SimpleCompare from '@/features/simple';
+import LoginForm from '@/features/loginForm';
 
 export default function IndexPage() {
-  return (
-    <PageContainer>
-      <SimpleCompare />
-    </PageContainer>
-  );
+    return (
+        <PageContainer>
+            <LoginForm />
+        </PageContainer>
+    );
 }
-

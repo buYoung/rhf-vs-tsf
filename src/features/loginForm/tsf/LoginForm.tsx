@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import { ACTION_LABELS, FIELD_LABELS, LIB_FULL_NAMES } from '@/features/simple/constants';
+import { ACTION_LABELS, FIELD_LABELS, LIB_FULL_NAMES } from '@/features/loginForm/constants';
 
 export default function LoginForm() {
     return (

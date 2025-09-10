@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { FIELD_LABELS } from '@/features/simple/constants';
+import { FIELD_LABELS } from '@/features/loginForm/constants';
 import * as React from 'react';
 
 export function LoginForm() {

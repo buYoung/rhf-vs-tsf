@@ -1,7 +1,7 @@
 import * as React from 'react';
-import LoginBodyCommon from '@/features/simple/common/LoginBody';
-import { LIB_FULL_NAMES } from '@/features/simple/constants';
-import { LoginForm } from '@/features/simple/rhf/LoginForm';
+import LoginBodyCommon from '@/features/loginForm/common/LoginBody';
+import { LIB_FULL_NAMES } from '@/features/loginForm/constants';
+import { LoginForm } from '@/features/loginForm/rhf/LoginForm';
 
 export default function LoginBodyRHF() {
     return (
