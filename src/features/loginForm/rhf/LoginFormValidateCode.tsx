@@ -10,6 +10,7 @@ import {
     type UseFormTrigger,
 } from 'react-hook-form';
 import type { LoginSchemaType } from '@/features/loginForm/schemas/loginSchema';
+import { useEffect, useState } from 'react';
 
 export interface LoginFormValidateCodeProps {
     control: Control<LoginSchemaType>;
@@ -19,12 +20,17 @@ export interface LoginFormValidateCodeProps {
 }
 
 export function LoginFormValidateCode({ control, watch, trigger, setValue }: LoginFormValidateCodeProps) {
+    const [isValid, setIsValid] = useState(false);
+
+    useEffect(() => {
+        setIsValid(false);
+    }, [watch('verificationCode')]);
+
     return (
         <Controller
             name="verificationCode"
             control={control}
             render={({ field, fieldState: { error } }) => {
-                console.log('field', field);
                 return (
                     <Grid container spacing={2}>
                         <Grid
@@ -50,9 +56,10 @@ export function LoginFormValidateCode({ control, watch, trigger, setValue }: Log
                                 fullWidth
                                 variant="outlined"
                                 sx={{ height: '100%' }}
+                                disabled={isValid}
                                 onClick={async () => {
                                     const result = await trigger('verificationCode');
-                                    console.log('result', result);
+                                    setIsValid(result);
                                 }}
                             >
                                 {ACTION_LABELS.fieldValidation}

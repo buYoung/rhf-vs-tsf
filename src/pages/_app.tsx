@@ -4,28 +4,29 @@ import Head from 'next/head';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Header from '../components/layout/Header';
+import { ToastContainer } from 'react-toastify';
 
 // MUI v7: enable CSS theme variables and built-in color schemes
 const theme = createTheme({
-  cssVariables: true,
-  colorSchemes: {
-    dark: true,
-  },
+    cssVariables: true,
+    colorSchemes: {
+        dark: true,
+    },
 });
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <React.Fragment>
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-        <title>RHF vs TSF</title>
-      </Head>
-      <ThemeProvider theme={theme} defaultMode="system">
-        <CssBaseline />
-        <Header />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </React.Fragment>
-  );
+    return (
+        <React.Fragment>
+            <Head>
+                <meta name="viewport" content="initial-scale=1, width=device-width" />
+                <title>RHF vs TSF</title>
+            </Head>
+            <ThemeProvider theme={theme} defaultMode="system">
+                <CssBaseline />
+                <Header />
+                <Component {...pageProps} />
+                <ToastContainer />
+            </ThemeProvider>
+        </React.Fragment>
+    );
 }
-
