@@ -1,20 +1,86 @@
 import * as React from 'react';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import { ACTION_LABELS, FIELD_LABELS, LIB_FULL_NAMES } from '@/features/loginForm/constants';
+import { ACTION_LABELS, FIELD_LABELS } from '@/features/loginForm/constants';
 import Grid from '@mui/material/Grid';
+import { useForm } from '@tanstack/react-form';
+import { LoginSchema, type LoginSchemaType } from '@/features/loginForm/schemas/loginSchema';
+import { type FormEventHandler, type Ref, useCallback, useImperativeHandle, useRef } from 'react';
 
-export default function LoginForm() {
+export interface TsfLoginFormProps {
+    ref: Ref<TsfLoginFormRef>;
+    handleOnSubmit: (results: LoginSchemaType) => void;
+}
+
+export interface TsfLoginFormRef {
+    handleSubmit: () => void;
+}
+
+export function LoginForm({ ref, handleOnSubmit }: TsfLoginFormProps) {
+    const form = useForm({
+        validators: {
+            onChange: LoginSchema,
+            onSubmit: LoginSchema,
+        },
+        onSubmit: async (submit) => {
+            console.log('Form Submitted:', submit);
+        },
+    });
+
+    const formRef = useRef<HTMLFormElement>(null);
+
+    const handleOnSubmitForm: FormEventHandler<HTMLFormElement> = useCallback(
+        async (e) => {
+            console.log('Form onSubmit Event Triggered');
+            e.preventDefault();
+            e.stopPropagation();
+            await form.handleSubmit();
+        },
+        [form],
+    );
+
+    useImperativeHandle(
+        ref,
+        () => ({
+            handleSubmit: async () => {
+                console.log('Imperative Handle Submit Called');
+                if (formRef.current) {
+                    formRef.current.requestSubmit();
+                }
+            },
+        }),
+        [],
+    );
+
     return (
-        <Box component="form" noValidate sx={{ mt: 2 }}>
-            <TextField fullWidth label={FIELD_LABELS.id} sx={{ mb: 1 }} />
-            <TextField fullWidth label={FIELD_LABELS.password} type="password" sx={{ mb: 1 }} />
+        <form ref={formRef} onSubmit={handleOnSubmitForm}>
+            <form.Field
+                name="email"
+                children={(field) => (
+                    <TextField
+                        fullWidth
+                        label={FIELD_LABELS.id}
+                        sx={{ mb: 1 }}
+                        defaultValue={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        onBlur={() => field.handleBlur()}
+                    />
+                )}
+            />
+            <form.Field name="password">
+                {(field) => (
+                    <TextField
+                        fullWidth
+                        label={FIELD_LABELS.password}
+                        type="password"
+                        sx={{ mb: 1 }}
+                        defaultValue={field.state.value}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        onBlur={() => field.handleBlur()}
+                    />
+                )}
+            </form.Field>
 
             <Grid container spacing={2}>
                 <Grid
@@ -35,6 +101,6 @@ export default function LoginForm() {
                     </Button>
                 </Grid>
             </Grid>
-        </Box>
+        </form>
     );
 }
