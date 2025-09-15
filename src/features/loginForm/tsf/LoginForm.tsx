@@ -4,9 +4,11 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { ACTION_LABELS, FIELD_LABELS } from '@/features/loginForm/constants';
 import Grid from '@mui/material/Grid';
-import { useForm } from '@tanstack/react-form';
+import { useForm, useStore } from '@tanstack/react-form';
 import { LoginSchema, type LoginSchemaType } from '@/features/loginForm/schemas/loginSchema';
-import { type FormEventHandler, type Ref, useCallback, useImperativeHandle, useRef } from 'react';
+import { type FormEventHandler, type Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { LoginFormValidateCode } from '@/features/loginForm/tsf/LoginFormValidateCode';
+import { LoginFormOptions } from '@/features/loginForm/tsf/shared-form';
 
 export interface TsfLoginFormProps {
     ref: Ref<TsfLoginFormRef>;
@@ -19,12 +21,9 @@ export interface TsfLoginFormRef {
 
 export function LoginForm({ ref, handleOnSubmit }: TsfLoginFormProps) {
     const form = useForm({
-        validators: {
-            onChange: LoginSchema,
-            onSubmit: LoginSchema,
-        },
-        onSubmit: async (submit) => {
-            console.log('Form Submitted:', submit);
+        ...LoginFormOptions,
+        onSubmit: async ({ value }) => {
+            handleOnSubmit(value);
         },
     });
 
@@ -32,7 +31,6 @@ export function LoginForm({ ref, handleOnSubmit }: TsfLoginFormProps) {
 
     const handleOnSubmitForm: FormEventHandler<HTMLFormElement> = useCallback(
         async (e) => {
-            console.log('Form onSubmit Event Triggered');
             e.preventDefault();
             e.stopPropagation();
             await form.handleSubmit();
@@ -44,7 +42,6 @@ export function LoginForm({ ref, handleOnSubmit }: TsfLoginFormProps) {
         ref,
         () => ({
             handleSubmit: async () => {
-                console.log('Imperative Handle Submit Called');
                 if (formRef.current) {
                     formRef.current.requestSubmit();
                 }
@@ -54,20 +51,20 @@ export function LoginForm({ ref, handleOnSubmit }: TsfLoginFormProps) {
     );
 
     return (
-        <form ref={formRef} onSubmit={handleOnSubmitForm}>
-            <form.Field
-                name="email"
-                children={(field) => (
+        <Box component="form" ref={formRef} sx={{ mt: 2 }} onSubmit={handleOnSubmitForm} noValidate>
+            <form.Field name="email">
+                {(field) => (
                     <TextField
                         fullWidth
                         label={FIELD_LABELS.id}
                         sx={{ mb: 1 }}
-                        defaultValue={field.state.value}
+                        value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        onBlur={() => field.handleBlur()}
+                        onBlur={field.handleBlur}
+                        helperText={field.state.meta.errors?.at(0)?.message ?? undefined}
                     />
                 )}
-            />
+            </form.Field>
             <form.Field name="password">
                 {(field) => (
                     <TextField
@@ -75,32 +72,15 @@ export function LoginForm({ ref, handleOnSubmit }: TsfLoginFormProps) {
                         label={FIELD_LABELS.password}
                         type="password"
                         sx={{ mb: 1 }}
-                        defaultValue={field.state.value}
+                        value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        onBlur={() => field.handleBlur()}
+                        onBlur={field.handleBlur}
+                        helperText={field.state.meta.errors?.at(0)?.message ?? undefined}
                     />
                 )}
             </form.Field>
 
-            <Grid container spacing={2}>
-                <Grid
-                    size={{
-                        xs: 3,
-                        sm: 3,
-                        md: 6,
-                        lg: 6,
-                        xl: 6,
-                    }}
-                ></Grid>
-                <Grid size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
-                    <TextField fullWidth label={FIELD_LABELS.verificationCode} />
-                </Grid>
-                <Grid size={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }}>
-                    <Button fullWidth variant="outlined" sx={{ height: '100%' }}>
-                        {ACTION_LABELS.fieldValidation}
-                    </Button>
-                </Grid>
-            </Grid>
-        </form>
+            <LoginFormValidateCode form={form} />
+        </Box>
     );
 }
