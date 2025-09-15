@@ -6,9 +6,10 @@ import { LoginSchema } from '@/features/loginForm/schemas/loginSchema';
 import * as React from 'react';
 import { type useForm, useStore, type ReactFormExtendedApi } from '@tanstack/react-form';
 import { useEffect, useState } from 'react';
+import type { z } from 'zod';
 
 export interface LoginFormValidateCodeProps {
-    form: ReactFormExtendedApi<any, any, any, any, any, any, any, any, any, any, any, any>;
+    form: ReactFormExtendedApi<z.input<typeof LoginSchema>, any, any, any, any, any, any, any, any, any, any, any>;
 }
 
 export function LoginFormValidateCode({ form }: LoginFormValidateCodeProps) {
